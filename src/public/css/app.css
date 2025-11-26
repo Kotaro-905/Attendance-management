@@ -1,0 +1,140 @@
+/* 共通 */
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background-color: #222;
+}
+
+/* ヘッダー */
+
+.site-header {
+    height: 64px;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    box-sizing: border-box;
+}
+
+.site-header__logo {
+    height: 32px;
+    display: block;
+}
+
+.site-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.site-header__nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.site-header__nav-link--button {
+    font-family: inherit;
+}
+
+.site-header__logout-form {
+    margin: 0;
+}
+
+.site-main {
+    min-height: calc(100vh - 64px);
+    background-color: #222;
+}
+
+/* 勤怠登録画面 */
+
+.attendance-main {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    box-sizing: border-box;
+}
+
+.attendance-card {
+    width: 100%;
+    max-width: 1080px;
+    min-height: 520px;
+    background-color: #f3f3f5;
+    padding: 80px 40px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* ステータスバッジ・日付・時刻 */
+
+.attendance-status-wrap {
+    margin-bottom: 40px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-size: 12px;
+    background-color: #e0e0e0;
+    color: #555;
+}
+
+.attendance-date {
+    font-size: 24px;
+    margin: 0 0 24px;
+}
+
+.attendance-time {
+    font-size: 64px;
+    font-weight: 700;
+    margin: 0 0 48px;
+}
+
+/* ボタン */
+
+.attendance-buttons {
+    margin-top: 16px;
+}
+
+.attendance-button-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.btn {
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 12px 40px;
+}
+
+.btn--primary {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn--secondary {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
+
+.btn--wide {
+    min-width: 200px;
+}
+
+.attendance-message {
+    margin-top: 32px;
+    font-size: 18px;
+}

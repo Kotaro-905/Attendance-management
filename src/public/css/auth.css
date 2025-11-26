@@ -1,0 +1,108 @@
+/* 共通レイアウト */
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background-color: #222;
+}
+
+/* 黒いヘッダー部分 */
+
+.auth-header {
+    background-color: #000;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+}
+
+.auth-header__logo {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+/* 白いカード部分 */
+
+.auth-container {
+    min-height: calc(100vh - 56px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+}
+
+.auth-card {
+    background-color: #fff;
+    width: 100%;
+    max-width: 720px;
+    padding: 56px 80px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 40px 24px;
+    }
+}
+
+/* タイトル */
+
+.auth-title {
+    text-align: center;
+    font-size: 24px;
+    margin: 0 0 40px;
+}
+
+/* フォーム */
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.form-error {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #e53935;
+}
+
+/* ボタンとリンク */
+
+.auth-button {
+    width: 100%;
+    margin-top: 24px;
+    height: 44px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.auth-link {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.auth-link a {
+    color: #007bff;
+    text-decoration: none;
+}
