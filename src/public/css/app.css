@@ -7,11 +7,19 @@ body {
     background-color: #222;
 }
 
-/* ヘッダー */
+/* =====================
+   ヘッダー（app.blade.php 用）
+   ===================== */
 
 .site-header {
-    height: 64px;
     background-color: #000;
+    height: 56px;
+}
+
+.site-header__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -19,44 +27,66 @@ body {
     box-sizing: border-box;
 }
 
-.site-header__logo {
-    height: 32px;
+/* ロゴ */
+
+.site-header__logo img {
     display: block;
+    height: 32px;
 }
+
+/* ナビ（クラス名を .site-header__nav 系に統一） */
 
 .site-header__nav {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 24px;
 }
 
+/* 通常リンク「勤怠 / 勤怠一覧 / 申請」 */
 .site-header__nav-link {
     color: #fff;
     text-decoration: none;
     font-size: 14px;
-    border: none;
-    background: none;
-    padding: 0;
+}
+
+/* hover 時の下線だけ付ける */
+.site-header__nav-link:hover {
+    text-decoration: underline;
+}
+
+/* ログアウトボタンまわり */
+
+.site-header__logout-form {
+    margin: 0 0 0 16px;
+}
+
+.site-header__logout-form button {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 4px 12px;
+    font-size: 12px;
     cursor: pointer;
 }
 
-.site-header__nav-link--button {
-    font-family: inherit;
+/* クリック時の軽い変化（お好みで） */
+.site-header__logout-form button:hover {
+    background-color: #fff;
 }
 
-.site-header__logout-form {
-    margin: 0;
-}
+/* メイン領域 */
 
 .site-main {
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - 56px);
     background-color: #222;
 }
 
-/* 勤怠登録画面 */
+/* =====================
+   勤怠登録画面
+   ===================== */
 
 .attendance-main {
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - 56px);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -137,4 +167,240 @@ body {
 .attendance-message {
     margin-top: 32px;
     font-size: 18px;
+}
+
+/* =====================
+   管理者 勤怠一覧画面
+   ===================== */
+
+/* 全体レイアウト */
+
+.admin-main {
+    min-height: calc(100vh - 56px);
+    /* ヘッダー分を引く */
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    box-sizing: border-box;
+}
+
+.admin-card {
+    width: 100%;
+    max-width: 1080px;
+    background-color: #f3f3f5;
+    padding: 48px 40px 56px;
+    box-sizing: border-box;
+}
+
+/* 見出し部分 */
+
+.admin-heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.admin-heading__bar {
+    width: 4px;
+    height: 28px;
+    background-color: #000;
+    margin-right: 12px;
+}
+
+.admin-heading__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* 日付ナビ */
+
+.admin-date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.admin-date-nav__button {
+    color: #000;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.admin-date-nav__current {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-date-nav__icon {
+    font-size: 16px;
+}
+
+.admin-date-nav__text {
+    font-size: 14px;
+}
+
+/* 一覧テーブル */
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    margin-top: 16px;
+    font-size: 13px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.admin-table thead th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+
+.admin-table__col-name {
+    width: 22%;
+}
+
+.admin-table__col-time {
+    width: 12%;
+    text-align: center;
+}
+
+.admin-table__col-total {
+    width: 10%;
+    text-align: center;
+}
+
+.admin-table__col-detail {
+    width: 10%;
+    text-align: center;
+}
+
+.admin-table td.admin-table__col-time,
+.admin-table th.admin-table__col-time,
+.admin-table td.admin-table__col-total,
+.admin-table th.admin-table__col-total,
+.admin-table td.admin-table__col-detail,
+.admin-table th.admin-table__col-detail {
+    text-align: center;
+}
+
+/* 詳細リンク */
+
+.admin-table__detail-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.admin-table__detail-link:hover {
+    text-decoration: underline;
+}
+
+/* データなしメッセージ */
+
+.admin-empty {
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+/* =====================
+   管理者 勤怠詳細画面
+   ===================== */
+
+.admin-detail__table-wrap {
+    margin-top: 24px;
+}
+
+.admin-detail__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.admin-detail__th,
+.admin-detail__td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+.admin-detail__th {
+    width: 20%;
+    background-color: #f5f5f5;
+    font-weight: 500;
+    text-align: left;
+}
+
+.admin-detail__td {
+    background-color: #fff;
+}
+
+.admin-detail__date-row {
+    display: flex;
+    gap: 24px;
+}
+
+.admin-detail__time-range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-detail__input-time {
+    width: 120px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fdfdfd;
+}
+
+.admin-detail__input-time[readonly] {
+    background-color: #fdfdfd;
+}
+
+.admin-detail__tilde {
+    font-size: 14px;
+}
+
+.admin-detail__textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    background-color: #fdfdfd;
+}
+
+.admin-detail__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.admin-detail__submit {
+    min-width: 140px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    background-color: #000;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
 }

@@ -1,12 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('content')
+<h1 class="auth-title">ログイン</h1>
 
-<div class="auth-container">
-    <div class="auth-card">
-        <h1 class="auth-title">ログイン</h1>
-
-        <form method="POST" action="{{ route('login') }}">
+<form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="form-group">
@@ -35,6 +32,4 @@
                 <a href="{{ route('register') }}">会員登録はこちら</a>
             </p>
         </form>
-    </div>
-</div>
 @endsection
