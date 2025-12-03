@@ -5,14 +5,15 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Attendance;
+use Carbon\Carbon;   // ★ 追加
 
 class AttendanceDummySeeder extends Seeder
 {
     public function run(): void
     {
-        // ダミーデータとして使う勤務日
-        // Figma に合わせるなら 2023-06-01、今のままで良ければ 2025-11-28 のままでOKです。
-        $workDate = '2025-11-28';
+        // ★ ダミーを入れたい期間を決める
+        $startDate = Carbon::parse('2025-11-01');
+        $endDate   = Carbon::parse('2026-03-31');
 
         // ダミースタッフ用ユーザーだけ取得
         $staffs = User::whereIn('email', [
@@ -25,24 +26,41 @@ class AttendanceDummySeeder extends Seeder
         ])->get();
 
         foreach ($staffs as $staff) {
-            Attendance::updateOrCreate(
-                [
-                    'user_id'   => $staff->id,
-                    'work_date' => $workDate,
-                ],
-                [
-                    // 出勤 09:00
-                    'clock_in_at'     => '09:00:00',
-                    // 休憩 12:00〜13:00
-                    'break_start_at'  => '12:00:00',
-                    'break_end_at'    => '13:00:00',
-                    // 退勤 18:00
-                    'clock_out_at'    => '18:00:00',
-                    // 退勤済ステータス（0:未出勤,1:勤務中,2:休憩中,3:退勤済 想定）
-                    'status'          => 3,
-                    'remarks'         => null,
-                ]
-            );
+
+            // ★ 期間内の日付を 1 日ずつループ
+            $date = $startDate->copy();
+
+            while ($date->lte($endDate)) {
+
+                // ★ 土日をスキップ
+                if (! $date->isWeekend()) {
+
+                    Attendance::updateOrCreate(
+                        [
+                            'user_id'   => $staff->id,
+                            'work_date' => $date->toDateString(),
+                        ],
+                        [
+                            // 出勤 09:00
+                            'clock_in_at'     => '09:00:00',
+
+                            // 休憩 12:00〜13:00
+                            'break_start_at'  => '12:00:00',
+                            'break_end_at'    => '13:00:00',
+
+                            // 退勤 18:00
+                            'clock_out_at'    => '18:00:00',
+
+                            // 退勤済ステータス（例）
+                            'status'          => 3,
+                            'remarks'         => null,
+                        ]
+                    );
+                }
+
+                // 次の日へ
+                $date->addDay();
+            }
         }
     }
 }

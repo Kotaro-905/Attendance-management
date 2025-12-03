@@ -56,10 +56,6 @@ Route::middleware('auth')->group(function () {
     // 勤怠登録の各操作（出勤・休憩入・休憩戻・退勤）
     Route::post('/attendance', [AttendanceController::class, 'store'])
         ->name('attendance.store');
-
-    // （必要なら）一般ユーザー側の申請一覧
-    Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])
-        ->name('stamp_correction_request.list');
 });
 
 // =======================
@@ -90,27 +86,13 @@ Route::prefix('admin')
                 ->name('attendance.index');
 
             // ★ 勤怠詳細画面（管理者）
-        Route::get('/attendance/{attendance}', [AdminAttendanceController::class, 'show'])
-            ->name('attendance.show');
+            Route::get('/attendance/{attendance}', [AdminAttendanceController::class, 'show'])
+                ->name('attendance.show');
+
+            // ★ 勤怠更新（管理者）
+            Route::put('/attendance/{attendance}', [AdminAttendanceController::class, 'update'])
+                ->name('attendance.update');
+
             
-            // スタッフ一覧
-            Route::get('/staff/list', [StaffController::class, 'index'])
-                ->name('staff.list');
-
-            // 申請一覧
-            Route::get('/stamp_correction_request/list', [AdminStampCorrectionRequestController::class, 'index'])
-                ->name('stamp_correction_request.list');
-
-            // 修正申請 承認画面表示
-            Route::get(
-                '/stamp_correction_request/approve/{attendance_correction_request_id}',
-                [AdminStampCorrectionRequestController::class, 'approve']
-            )->name('stamp_correction_request.approve');
-
-            // 修正申請 承認/却下 更新処理
-            Route::post(
-                '/stamp_correction_request/approve/{attendance_correction_request_id}',
-                [AdminStampCorrectionRequestController::class, 'update']
-            )->name('stamp_correction_request.update');
         });
     });

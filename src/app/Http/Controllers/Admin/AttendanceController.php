@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Http\Requests\Admin\AttendanceUpdateRequest;
+use Illuminate\Http\RedirectResponse;
 
 class AttendanceController extends Controller
 {
@@ -102,4 +104,26 @@ class AttendanceController extends Controller
             'breakEnd'
         ));
     }
+
+    public function update(AttendanceUpdateRequest $request, Attendance $attendance): RedirectResponse
+    {
+        $data = $request->validated();
+
+        // form は "HH:MM" なので、カラムが time(またはdatetime) なら秒を付けて保存
+        $attendance->clock_in_at    = !empty($data['clock_in_at'])    ? $data['clock_in_at']    . ':00' : null;
+        $attendance->clock_out_at   = !empty($data['clock_out_at'])   ? $data['clock_out_at']   . ':00' : null;
+        $attendance->break_start_at = !empty($data['break_start_at']) ? $data['break_start_at'] . ':00' : null;
+        $attendance->break_end_at   = !empty($data['break_end_at'])   ? $data['break_end_at']   . ':00' : null;
+
+        // 休憩2は今はDBに保存しない想定なので何もしない
+        $attendance->remarks = $data['remarks'] ?? null;
+
+        $attendance->save();
+
+        // 一覧画面に戻る（日付はその勤怠の work_date をクエリで渡す）
+        return redirect()
+            ->route('admin.attendance.index', ['date' => $attendance->work_date])
+            ->with('status', '勤怠を更新しました。');
+    }
 }
+

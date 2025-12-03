@@ -323,80 +323,113 @@ body {
    管理者 勤怠詳細画面
    ===================== */
 
+/* 詳細画面だけカードを細めにする */
+.admin-card.admin-detail {
+    max-width: 880px;
+    /* ← 少しだけ広めにして横長カードに */
+    margin: 40px auto 0;
+    /* 上の余白も少し増やす＋中央寄せ */
+    padding: 40px 56px 48px;
+    /* Figma っぽい余白 */
+    box-sizing: border-box;
+}
+
+/* テーブルラッパ */
 .admin-detail__table-wrap {
     margin-top: 24px;
 }
 
+/* テーブル基礎 */
 .admin-detail__table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
+    table-layout: fixed;
+    /* 列幅を安定させる */
 }
 
+/* セル共通 */
 .admin-detail__th,
 .admin-detail__td {
-    padding: 16px 24px;
+    padding: 14px 24px;
     border-bottom: 1px solid #e0e0e0;
     font-size: 14px;
 }
 
+/* 左側ラベル列 */
 .admin-detail__th {
-    width: 20%;
+    width: 180px;
+    /* ← ここを広げると全行が綺麗に縦でそろう */
     background-color: #f5f5f5;
     font-weight: 500;
     text-align: left;
 }
 
+/* 右側入力列 */
 .admin-detail__td {
     background-color: #fff;
+    text-align: center;
+    
 }
 
+/* 日付の「2023年」「6月1日」を横並びに（中央寄せ） */
 .admin-detail__date-row {
     display: flex;
-    gap: 24px;
+    justify-content: center;
+    gap: 64px;
+    /* ← Figma のように広めの間隔 */
+    align-items: center;
 }
 
+/* 時刻レンジ（出勤・退勤 / 休憩 / 休憩2） */
 .admin-detail__time-range {
     display: flex;
+    justify-content: center;
+    /* ← 入力欄をセル中央に寄せる */
     align-items: center;
-    gap: 12px;
+    gap: 32px;
+    /* 入力欄と「〜」の間隔を広めに */
 }
 
+/* time入力のスタイル */
 .admin-detail__input-time {
-    width: 120px;
-    padding: 6px 8px;
+    width: 140px;
+    padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #fdfdfd;
+    background-color: #fff;
+    box-sizing: border-box;
+    text-align: center;
+    /* ← 中身（時刻）も中央寄せ */
 }
 
-.admin-detail__input-time[readonly] {
-    background-color: #fdfdfd;
-}
-
+/* 「〜」 */
 .admin-detail__tilde {
     font-size: 14px;
 }
 
+/* 備考テキストエリア */
 .admin-detail__textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 8px;
+    padding: 10px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     resize: vertical;
-    background-color: #fdfdfd;
+    background-color: #fff;
 }
 
+/* 下部ボタンエリア */
 .admin-detail__actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 24px;
 }
 
+/* 修正ボタン */
 .admin-detail__submit {
     min-width: 140px;
-    padding: 10px 24px;
+    padding: 10px 32px;
     border: none;
     border-radius: 4px;
     background-color: #000;
