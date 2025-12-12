@@ -42,6 +42,12 @@ class Attendance extends Model
         return $this->hasMany(CorrectionRequest::class);
     }
 
+    // この勤怠の休憩記録
+    public function breaks()
+    {
+        return $this->hasMany(AttendanceBreak::class, 'attendance_id');
+    }
+
     public function getBreakDurationAttribute(): ?string
     {
         if (!$this->break_start_at || !$this->break_end_at) {

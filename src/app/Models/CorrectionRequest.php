@@ -4,30 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Attendance;
+use App\Models\User;
+use App\Models\CorrectionBreak;
 
 class CorrectionRequest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'attendance_id',
-        'user_id',
-        'admin_id',
-        'requested_work_date',
-        'requested_clock_in_time',
-        'requested_break_start_time',
-        'requested_break_end_time',
-        'requested_clock_out_time',
-        'reason',
-        'status',
-        'decided_at',
-    ];
+    'attendance_id',
+    'user_id',
+    'admin_id',
+    'requested_work_date',
+    'requested_clock_in_time',
+    'requested_clock_out_time',
+    'reason',
+    'status',
+    'decided_at',
+];
 
     protected $casts = [
         'requested_work_date'   => 'date',
         'requested_clock_in_time'    => 'datetime:H:i',
-        'requested_break_start_time' => 'datetime:H:i',
-        'requested_break_end_time'   => 'datetime:H:i',
         'requested_clock_out_time'   => 'datetime:H:i',
         'status'                => 'integer',
         'decided_at'            => 'datetime',
@@ -50,4 +49,12 @@ class CorrectionRequest extends Model
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
+
+     /** 休憩（子テーブル） */
+    public function breaks()
+    {
+        return $this->hasMany(CorrectionBreak::class);
+    }
+
+
 }

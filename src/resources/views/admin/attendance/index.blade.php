@@ -1,6 +1,6 @@
 {{-- resources/views/admin/attendance/index.blade.php --}}
 @php
-use Carbon\Carbon;
+    use Carbon\Carbon;
 @endphp
 
 @extends('layouts.app')
@@ -22,7 +22,7 @@ use Carbon\Carbon;
         {{-- 日付ナビ --}}
         <div class="admin-date-nav">
             <a href="{{ route('admin.attendance.index', ['date' => $prevDate->toDateString()]) }}"
-                class="admin-date-nav__button">
+               class="admin-date-nav__button">
                 ← 前日
             </a>
 
@@ -34,110 +34,55 @@ use Carbon\Carbon;
             </div>
 
             <a href="{{ route('admin.attendance.index', ['date' => $nextDate->toDateString()]) }}"
-                class="admin-date-nav__button admin-date-nav__button--right">
+               class="admin-date-nav__button admin-date-nav__button--right">
                 翌日 →
             </a>
         </div>
 
         {{-- 一覧テーブル --}}
         @if ($attendances->isEmpty())
-        <p class="admin-empty">該当日の勤怠データはありません。</p>
+            <p class="admin-empty">該当日の勤怠データはありません。</p>
         @else
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th class="admin-table__col-name">名前</th>
-                    <th class="admin-table__col-time">出勤</th>
-                    <th class="admin-table__col-time">退勤</th>
-                    <th class="admin-table__col-time">休憩</th>
-                    <th class="admin-table__col-total">合計</th>
-                    <th class="admin-table__col-detail">詳細</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($attendances as $attendance)
-                @php
-                // 出勤・退勤（datetime でも time でも OK なように parse を使う）
-                $clockIn = ($attendance->clock_in_at ?? '') !== ''
-                ? Carbon::parse($attendance->clock_in_at)
-                : null;
-                $clockOut = ($attendance->clock_out_at ?? '') !== ''
-                ? Carbon::parse($attendance->clock_out_at)
-                : null;
-
-                // 休憩
-                $breakStart = ($attendance->break_start_at ?? '') !== '' &&
-                ($attendance->break_end_at ?? '') !== ''
-                ? Carbon::parse($attendance->break_start_at)
-                : null;
-
-                $breakEnd = ($attendance->break_start_at ?? '') !== '' &&
-                ($attendance->break_end_at ?? '') !== ''
-                ? Carbon::parse($attendance->break_end_at)
-                : null;
-
-                // 休憩時間（分）
-                $breakMinutes = ($breakStart && $breakEnd)
-                ? $breakEnd->diffInMinutes($breakStart)
-                : 0;
-
-                // 合計勤務時間（分）
-                if ($clockIn && $clockOut) {
-                $totalMinutes = $clockOut->diffInMinutes($clockIn) - $breakMinutes;
-                if ($totalMinutes < 0) {
-                    $totalMinutes=0;
-                    }
-                    } else {
-                    $totalMinutes=null;
-                    }
-
-                    // 表示用フォーマット
-                    $clockInDisplay=$clockIn ? $clockIn->format('H:i') : '-';
-                    $clockOutDisplay = $clockOut ? $clockOut->format('H:i') : '-';
-
-                    if ($breakMinutes > 0) {
-                    $breakHour = floor($breakMinutes / 60);
-                    $breakMin = $breakMinutes % 60;
-                    $breakDisplay = sprintf('%d:%02d', $breakHour, $breakMin);
-                    } else {
-                    $breakDisplay = '-';
-                    }
-
-                    if (!is_null($totalMinutes)) {
-                    $totalHour = floor($totalMinutes / 60);
-                    $totalMin = $totalMinutes % 60;
-                    $totalDisplay = sprintf('%d:%02d', $totalHour, $totalMin);
-                    } else {
-                    $totalDisplay = '-';
-                    }
-                    @endphp
-
+            <table class="admin-table">
+                <thead>
                     <tr>
-                        <td class="admin-table__cell-name">
-                            {{ $attendance->user->name }}
-                        </td>
-                        <td class="admin-table__cell-time">
-                            {{ $clockInDisplay }}
-                        </td>
-                        <td class="admin-table__cell-time">
-                            {{ $clockOutDisplay }}
-                        </td>
-                        <td class="admin-table__cell-time">
-                            {{ $breakDisplay }}
-                        </td>
-                        <td class="admin-table__cell-total">
-                            {{ $totalDisplay }}
-                        </td>
-                        <td class="admin-table__cell-detail">
-                            <a href="{{ route('admin.attendance.show', ['attendance' => $attendance->id]) }}"
-                                class="admin-table__detail-link">
-                                詳細
-                            </a>
-                        </td>
+                        <th class="admin-table__col-name">名前</th>
+                        <th class="admin-table__col-time">出勤</th>
+                        <th class="admin-table__col-time">退勤</th>
+                        <th class="admin-table__col-time">休憩</th>
+                        <th class="admin-table__col-total">合計</th>
+                        <th class="admin-table__col-detail">詳細</th>
                     </tr>
+                </thead>
+                <tbody>
+                    @foreach ($attendances as $attendance)
+                        <tr>
+                            <td class="admin-table__cell-name">
+                                {{ $attendance->user->name }}
+                            </td>
+                            <td class="admin-table__cell-time">
+                                {{-- コントローラで作った表示用プロパティをそのまま使う --}}
+                                {{ $attendance->clock_in_display }}
+                            </td>
+                            <td class="admin-table__cell-time">
+                                {{ $attendance->clock_out_display }}
+                            </td>
+                            <td class="admin-table__cell-time">
+                                {{ $attendance->break_duration_display }}
+                            </td>
+                            <td class="admin-table__cell-total">
+                                {{ $attendance->total_duration_display }}
+                            </td>
+                            <td class="admin-table__cell-detail">
+                                <a href="{{ route('admin.attendance.show', ['attendance' => $attendance->id]) }}"
+                                   class="admin-table__detail-link">
+                                    詳細
+                                </a>
+                            </td>
+                        </tr>
                     @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         @endif
     </div>
 </main>

@@ -11,10 +11,11 @@ use Illuminate\Http\RedirectResponse;
 
 class AttendanceController extends Controller
 {
-    // 勤怠一覧画面（管理者）
+    /**
+     * 勤怠一覧（管理者）
+     */
     public function index(Request $request)
     {
-        // ?date=2023-06-01 みたいなクエリがあればそれを優先
         $dateParam = $request->query('date');
 
         try {
@@ -22,7 +23,6 @@ class AttendanceController extends Controller
                 ? Carbon::parse($dateParam)->startOfDay()
                 : Carbon::today();
         } catch (\Exception $e) {
-            // 変な日付が来たら今日に戻す
             $targetDate = Carbon::today();
         }
 
@@ -30,13 +30,14 @@ class AttendanceController extends Controller
         $prevDate   = $targetDate->copy()->subDay();
         $nextDate   = $targetDate->copy()->addDay();
 
-        // 指定日の勤怠＋ユーザー名
-        $attendances = Attendance::with('user')
+        // user と breaks を一緒に取得
+        $attendances = Attendance::with(['user', 'breaks'])
             ->where('work_date', $dateString)
             ->orderBy('user_id')
             ->get()
             ->map(function ($attendance) {
-                // 出勤・退勤の表示
+
+                // 出勤・退勤 表示用
                 $attendance->clock_in_display = $attendance->clock_in_at
                     ? Carbon::parse($attendance->clock_in_at)->format('H:i')
                     : '-';
@@ -45,26 +46,46 @@ class AttendanceController extends Controller
                     ? Carbon::parse($attendance->clock_out_at)->format('H:i')
                     : '-';
 
-                // 休憩時間
-                $breakMinutes = null;
-                if ($attendance->break_start_at && $attendance->break_end_at) {
-                    $breakMinutes = Carbon::parse($attendance->break_start_at)
-                        ->diffInMinutes(Carbon::parse($attendance->break_end_at));
+                // -----------------------------
+                // 休憩合計
+                // 1. attendance_breaks にあればそちらを優先
+                // 2. 何も無ければ旧カラム break_start_at / break_end_at を見る
+                // -----------------------------
+                $breakMinutes = 0;
+                $hasBreakFromBreaks = false;
 
+                foreach ($attendance->breaks as $break) {
+                    if ($break->start_at && $break->end_at) {
+                        $hasBreakFromBreaks = true;
+                        $breakMinutes += Carbon::parse($break->start_at)
+                            ->diffInMinutes(Carbon::parse($break->end_at));
+                    }
+                }
+
+                // attendance_breaks からは1つも取れなかった場合だけ、旧カラムを使う
+                if (!$hasBreakFromBreaks && $attendance->break_start_at && $attendance->break_end_at) {
+                    $breakMinutes += Carbon::parse($attendance->break_start_at)
+                        ->diffInMinutes(Carbon::parse($attendance->break_end_at));
+                }
+
+                if ($breakMinutes > 0) {
                     $attendance->break_duration_display =
                         sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60);
                 } else {
                     $attendance->break_duration_display = '-';
+                    // 0分扱いにしておく（合計計算では引かない）
+                    $breakMinutes = 0;
                 }
 
+                // -----------------------------
                 // 合計勤務時間（出勤〜退勤 − 休憩）
+                // -----------------------------
                 if ($attendance->clock_in_at && $attendance->clock_out_at) {
                     $totalMinutes = Carbon::parse($attendance->clock_in_at)
                         ->diffInMinutes(Carbon::parse($attendance->clock_out_at));
 
-                    if ($breakMinutes !== null) {
-                        $totalMinutes -= $breakMinutes;
-                    }
+                    // 休憩があれば引く（0なら何も起きない）
+                    $totalMinutes -= $breakMinutes;
 
                     $attendance->total_duration_display =
                         sprintf('%d:%02d', intdiv($totalMinutes, 60), $totalMinutes % 60);
@@ -83,47 +104,77 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 勤怠詳細（管理者）
+
+    /**
+     * 勤怠詳細（管理者）
+     */
     public function show(Attendance $attendance)
     {
-        // ユーザー情報も一緒に
-        $attendance->load('user');
+        $attendance->load(['user', 'breaks']);
 
-        $workDate   = Carbon::parse($attendance->work_date);
-        $clockIn    = $attendance->clock_in_at ? Carbon::parse($attendance->clock_in_at) : null;
-        $clockOut   = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
-        $breakStart = $attendance->break_start_at ? Carbon::parse($attendance->break_start_at) : null;
-        $breakEnd   = $attendance->break_end_at ? Carbon::parse($attendance->break_end_at) : null;
+        $workDate = Carbon::parse($attendance->work_date);
+        $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
+        $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
 
-        return view('admin.attendance.show', compact(
-            'attendance',
-            'workDate',
-            'clockIn',
-            'clockOut',
-            'breakStart',
-            'breakEnd'
-        ));
+        $breaks = $attendance->breaks
+            ->sortBy('order')
+            ->values();
+
+        $breakRowCount = $breaks->count();
+        $breakRowCount = max(1, $breakRowCount);
+        $breakRowCount = min(10, $breakRowCount);
+
+        return view('admin.attendance.show', [
+            'attendance'    => $attendance,
+            'workDate'      => $workDate,
+            'clockIn'       => $clockIn,
+            'clockOut'      => $clockOut,
+            'breaks'        => $breaks,
+            'breakRowCount' => $breakRowCount,
+        ]);
     }
 
-    public function update(AttendanceUpdateRequest $request, Attendance $attendance): RedirectResponse
-    {
+    /**
+     * 勤怠更新（管理者）
+     */
+    public function update(
+        AttendanceUpdateRequest $request,
+        Attendance $attendance
+    ): RedirectResponse {
+
         $data = $request->validated();
 
-        // form は "HH:MM" なので、カラムが time(またはdatetime) なら秒を付けて保存
-        $attendance->clock_in_at    = !empty($data['clock_in_at'])    ? $data['clock_in_at']    . ':00' : null;
-        $attendance->clock_out_at   = !empty($data['clock_out_at'])   ? $data['clock_out_at']   . ':00' : null;
-        $attendance->break_start_at = !empty($data['break_start_at']) ? $data['break_start_at'] . ':00' : null;
-        $attendance->break_end_at   = !empty($data['break_end_at'])   ? $data['break_end_at']   . ':00' : null;
+        $attendance->clock_in_at  = !empty($data['clock_in_at'])
+            ? $data['clock_in_at'] . ':00'
+            : null;
 
-        // 休憩2は今はDBに保存しない想定なので何もしない
+        $attendance->clock_out_at = !empty($data['clock_out_at'])
+            ? $data['clock_out_at'] . ':00'
+            : null;
+
         $attendance->remarks = $data['remarks'] ?? null;
-
         $attendance->save();
 
-        // 一覧画面に戻る（日付はその勤怠の work_date をクエリで渡す）
+        // 休憩レコード作り直し
+        $attendance->breaks()->delete();
+
+        if (!empty($data['breaks']) && is_array($data['breaks'])) {
+            foreach ($data['breaks'] as $index => $break) {
+                $start = $break['start'] ?? null;
+                $end   = $break['end']   ?? null;
+
+                if ($start && $end) {
+                    $attendance->breaks()->create([
+                        'order'    => (int) $index,
+                        'start_at' => $start . ':00',
+                        'end_at'   => $end   . ':00',
+                    ]);
+                }
+            }
+        }
+
         return redirect()
             ->route('admin.attendance.index', ['date' => $attendance->work_date])
             ->with('status', '勤怠を更新しました。');
     }
 }
-

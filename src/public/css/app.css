@@ -437,3 +437,457 @@ body {
     font-size: 14px;
     cursor: pointer;
 }
+
+/* =========================
+   スタッフ一覧ページ
+   ========================= */
+.staff-page {
+    /* 画面上下に少し余白をつけて中央寄せっぽく */
+    padding: 60px 0 80px;
+    background-color: #f5f5f7;
+    /* 他の管理画面と同じ薄グレーを想定 */
+}
+
+/* カードの幅・位置を調整（中央寄せ） */
+.staff-card {
+    max-width: 960px;
+    /* 画像に近い横幅 */
+    margin: 0 auto;
+    /* 中央寄せ */
+    padding: 40px 40px 48px;
+    background-color: #ffffff;
+    border-radius: 0;
+    /* 角は丸めないデザインっぽかったので 0 */
+    box-shadow: 0 0 0 1px #e6e6e6;
+}
+
+/* 見出し周り（既存 admin-heading を軽く調整する用） */
+.staff-card .admin-heading {
+    margin-bottom: 32px;
+}
+
+.staff-card .admin-heading__title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* テーブル全体 */
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+    background-color: #ffffff;
+}
+
+.staff-table thead {
+    background-color: #f5f5f7;
+}
+
+/* ヘッダセル */
+.staff-table th {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e6e6e6;
+    font-weight: 700;
+}
+
+/* 各列幅（画像イメージに近づける） */
+.staff-table__col-name {
+    width: 26%;
+}
+
+.staff-table__col-email {
+    width: 54%;
+}
+
+.staff-table__col-month {
+    width: 20%;
+    text-align: center;
+}
+
+/* ボディセル */
+.staff-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #ffffff;
+}
+
+/* 名前・メールは左寄せのまま */
+.staff-table__cell-name {
+    font-weight: 500;
+}
+
+.staff-table__cell-email {
+    word-break: break-all;
+}
+
+/* 「詳細」リンクを右寄せ＆青色に */
+.staff-table__cell-month {
+    text-align: center;
+}
+
+.staff-table__detail-link {
+    font-size: 13px;
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.staff-table__detail-link:hover {
+    text-decoration: underline;
+}
+
+/* ▼ スタッフ一覧ページ全体を中央寄せ */
+.admin-staff-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/* ▼ 内側のカード */
+.admin-staff-card {
+    width: 70%;
+    max-width: 1100px;
+    background: #ffffff;
+    padding: 40px 60px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* タイトル */
+.admin-staff-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+/* ▼ テーブルを中央寄せ */
+.admin-staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    /* ★ すべての列を中央寄せ */
+}
+
+.admin-staff-table th,
+.admin-staff-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center !important;
+    /* ★ 強制中央寄せ */
+}
+
+.admin-staff-table th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.admin-staff-detail a {
+    color: #0a58ca;
+}
+
+/* =========================
+   スタッフ月別勤怠（管理者）
+   ========================= */
+
+.staff-month-main {
+    background-color: #f4f4f7;
+    padding: 40px 0 80px;
+}
+
+.staff-month-card {
+    max-width: 760px;
+    /* 画像くらいの横幅 */
+    margin: 0 auto;
+    background-color: #f8f8fb;
+    /* 外側パネル */
+    border-radius: 8px;
+    padding: 32px 56px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* 見出し位置を少し内側に */
+.staff-month-heading {
+    margin-bottom: 24px;
+}
+
+/* 月ナビゲーション */
+.staff-month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.staff-month-nav__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    font-size: 13px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    text-decoration: none;
+    color: #333;
+}
+
+.staff-month-nav__button--prev {
+    margin-right: auto;
+}
+
+.staff-month-nav__button--next {
+    margin-left: auto;
+}
+
+.staff-month-nav__current {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.staff-month-nav__icon {
+    font-size: 16px;
+}
+
+/* テーブル */
+.staff-month-table-wrap {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.staff-month-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.staff-month-table thead {
+    background-color: #f1f1f5;
+}
+
+.staff-month-table th,
+.staff-month-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #ececf2;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.staff-month-table th.col-date,
+.staff-month-table td.col-date {
+    text-align: left;
+    padding-left: 18px;
+}
+
+.staff-month-table tr:last-child th,
+.staff-month-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* 詳細リンク */
+.staff-month-detail-link {
+    font-size: 13px;
+    color: #0077ff;
+    text-decoration: none;
+}
+
+.staff-month-detail-link:hover {
+    text-decoration: underline;
+}
+
+/* CSVボタン */
+.staff-month-export {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.staff-month-export__button {
+    min-width: 140px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.staff-month-export__button:hover {
+    opacity: 0.8;
+}
+
+/* ==========
+  スタッフ一覧：テーブルを中央に集めて見本寄せ（上書き用）
+  app.css の一番下に置く
+========== */
+
+.admin-card.admin-staff-card2 {
+    padding-top: 72px;
+    /* 見本みたいに上の余白を増やす */
+    padding-bottom: 72px;
+}
+
+/* テーブル自体を「細くして中央寄せ」するラッパ */
+.admin-staff-table-wrap2 {
+    width: 100%;
+    max-width: 820px;
+    /* ← ここで“中央に集まる” */
+    margin: 0 auto;
+    /* ← 中央寄せ */
+    background: #fff;
+    border-radius: 8px;
+    /* 見本の角丸 */
+    overflow: hidden;
+    /* 角丸をテーブルに効かせる */
+    box-shadow: 0 0 0 1px #e6e6e6;
+}
+
+/* テーブル本体 */
+.admin-staff-table2 {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 14px;
+}
+
+/* ヘッダ */
+.admin-staff-table2 thead th {
+    background: #f5f5f5;
+    font-weight: 700;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e6e6e6;
+    text-align: center;
+    /* 見本は中央寄せ感が強い */
+}
+
+/* ボディ */
+.admin-staff-table2 tbody td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center;
+    /* 見本寄せ */
+}
+
+/* 列幅 */
+.admin-staff-table2 .col-name {
+    width: 28%;
+}
+
+.admin-staff-table2 .col-email {
+    width: 52%;
+}
+
+.admin-staff-table2 .col-link {
+    width: 20%;
+}
+
+.admin-staff-table2 .td-email {
+    word-break: break-all;
+}
+
+/* 詳細リンク */
+.admin-staff-table2 .link-detail {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.admin-staff-table2 .link-detail:hover {
+    text-decoration: underline;
+}
+
+/* =========
+   月次勤怠（管理者）テーブルの列ズレ対策
+   ========= */
+
+/* テーブルの列幅を固定してズレを防ぐ */
+.admin-table {
+    table-layout: fixed;
+}
+
+/* 「日付」列は左寄せのまま */
+.admin-table__cell-name {
+    text-align: left;
+}
+
+/* 時刻・合計・詳細は中央寄せに統一（th/td両方） */
+.admin-table__cell-time,
+.admin-table__cell-total,
+.admin-table__cell-detail {
+    text-align: center;
+}
+
+/* 念のため th 側も強制 */
+.admin-table th.admin-table__col-time,
+.admin-table th.admin-table__col-total,
+.admin-table th.admin-table__col-detail {
+    text-align: center;
+}
+
+/* td 側にも幅指定を適用 */
+.admin-table td.admin-table__cell-time {
+    width: 12%;
+}
+
+.admin-table td.admin-table__cell-total {
+    width: 10%;
+}
+
+.admin-table td.admin-table__cell-detail {
+    width: 10%;
+}
+
+.admin-table td.admin-table__cell-name {
+    width: 22%;
+}
+
+/* 1) 列幅ブレ防止（固定レイアウト） */
+.admin-table {
+    table-layout: fixed;
+}
+
+/* 2) ヘッダとボディの “同じ列” を必ず中央にする
+      ※ .admin-table th,td { text-align:left; } に勝つため詳細セレクタで上書き */
+.admin-table thead th.admin-table__col-time,
+.admin-table thead th.admin-table__col-total,
+.admin-table thead th.admin-table__col-detail {
+    text-align: center;
+}
+
+.admin-table tbody td.admin-table__cell-time,
+.admin-table tbody td.admin-table__cell-total,
+.admin-table tbody td.admin-table__cell-detail {
+    text-align: center;
+}
+
+/* 3) 日付列は左寄せ維持（念のため） */
+.admin-table tbody td.admin-table__cell-name {
+    text-align: left;
+}
+
+/* 4) th と td で列幅を一致させる */
+.admin-table thead th.admin-table__col-name,
+.admin-table tbody td.admin-table__cell-name {
+    width: 22%;
+}
+
+.admin-table thead th.admin-table__col-time,
+.admin-table tbody td.admin-table__cell-time {
+    width: 12%;
+}
+
+.admin-table thead th.admin-table__col-total,
+.admin-table tbody td.admin-table__cell-total {
+    width: 10%;
+}
+
+.admin-table thead th.admin-table__col-detail,
+.admin-table tbody td.admin-table__cell-detail {
+    width: 10%;
+}

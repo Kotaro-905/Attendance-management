@@ -7,10 +7,16 @@
 @php
     use Carbon\Carbon;
 
-    $clockInValue    = $clockIn    ? $clockIn->format('H:i')    : '';
-    $clockOutValue   = $clockOut   ? $clockOut->format('H:i')   : '';
-    $breakStartValue = $breakStart ? $breakStart->format('H:i') : '';
-    $breakEndValue   = $breakEnd   ? $breakEnd->format('H:i')   : '';
+    // 出勤・退勤（バリデーションエラー時は old() を優先）
+    $clockInValue = old('clock_in_at');
+    if ($clockInValue === null) {
+        $clockInValue = $clockIn ? $clockIn->format('H:i') : '';
+    }
+
+    $clockOutValue = old('clock_out_at');
+    if ($clockOutValue === null) {
+        $clockOutValue = $clockOut ? $clockOut->format('H:i') : '';
+    }
 @endphp
 
 <main class="admin-main">
@@ -26,10 +32,20 @@
             @csrf
             @method('PUT')
 
+            {{-- バリデーションエラー表示 --}}
+            @if ($errors->any())
+                <div class="form-errors">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li class="form-error-item">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="admin-detail__table-wrap">
                 <table class="admin-detail__table">
                     <tbody>
-
                         {{-- 名前 --}}
                         <tr>
                             <th class="admin-detail__th">名前</th>
@@ -51,64 +67,79 @@
                         <tr>
                             <th class="admin-detail__th">出勤・退勤</th>
                             <td class="admin-detail__td admin-detail__time-range">
-                                <input type="time"
-                                       name="clock_in_at"
-                                       class="admin-detail__input-time"
-                                       value="{{ old('clock_in_at', $clockInValue) }}">
+                                <input
+                                    type="time"
+                                    name="clock_in_at"
+                                    class="admin-detail__input-time"
+                                    value="{{ $clockInValue }}"
+                                >
 
                                 <span class="admin-detail__tilde">〜</span>
 
-                                <input type="time"
-                                       name="clock_out_at"
-                                       class="admin-detail__input-time"
-                                       value="{{ old('clock_out_at', $clockOutValue) }}">
+                                <input
+                                    type="time"
+                                    name="clock_out_at"
+                                    class="admin-detail__input-time"
+                                    value="{{ $clockOutValue }}"
+                                >
                             </td>
                         </tr>
 
-                        {{-- 休憩 --}}
-                        <tr>
-                            <th class="admin-detail__th">休憩</th>
-                            <td class="admin-detail__td admin-detail__time-range">
-                                <input type="time"
-                                       name="break_start_at"
-                                       class="admin-detail__input-time"
-                                       value="{{ old('break_start_at', $breakStartValue) }}">
+                        {{-- 休憩（一般ユーザーが押した回数ぶん＋最低1行、最大10行） --}}
+                        @for ($i = 1; $i <= $breakRowCount; $i++)
+                            @php
+                                /** @var \App\Models\AttendanceBreak|null $break */
+                                $break = $breaks[$i - 1] ?? null;
 
-                                <span class="admin-detail__tilde">〜</span>
+                                // DB からの初期値
+                                $defaultStart = '';
+                                $defaultEnd   = '';
 
-                                <input type="time"
-                                       name="break_end_at"
-                                       class="admin-detail__input-time"
-                                       value="{{ old('break_end_at', $breakEndValue) }}">
-                            </td>
-                        </tr>
+                                if ($break && $break->start_at) {
+                                    $defaultStart = Carbon::parse($break->start_at)->format('H:i');
+                                }
+                                if ($break && $break->end_at) {
+                                    $defaultEnd = Carbon::parse($break->end_at)->format('H:i');
+                                }
 
-                        {{-- 休憩2（ダミー項目） --}}
-                        <tr>
-                            <th class="admin-detail__th">休憩2</th>
-                            <td class="admin-detail__td admin-detail__time-range">
-                                <input type="time"
-                                       name="break2_start"
-                                       class="admin-detail__input-time"
-                                       value="">
-                                <span class="admin-detail__tilde">〜</span>
-                                <input type="time"
-                                       name="break2_end"
-                                       class="admin-detail__input-time"
-                                       value="">
-                            </td>
-                        </tr>
+                                // old() があればそちら優先
+                                $startValue = old('breaks.'.$i.'.start', $defaultStart);
+                                $endValue   = old('breaks.'.$i.'.end',   $defaultEnd);
+                            @endphp
+
+                            <tr>
+                                <th class="admin-detail__th">休憩{{ $i }}</th>
+                                <td class="admin-detail__td admin-detail__time-range">
+                                    <input
+                                        type="time"
+                                        name="breaks[{{ $i }}][start]"
+                                        class="admin-detail__input-time"
+                                        value="{{ $startValue }}"
+                                    >
+
+                                    <span class="admin-detail__tilde">〜</span>
+
+                                    <input
+                                        type="time"
+                                        name="breaks[{{ $i }}][end]"
+                                        class="admin-detail__input-time"
+                                        value="{{ $endValue }}"
+                                    >
+                                </td>
+                            </tr>
+                        @endfor
 
                         {{-- 備考 --}}
                         <tr>
                             <th class="admin-detail__th">備考</th>
                             <td class="admin-detail__td">
-                                <textarea name="remarks"
-                                          class="admin-detail__textarea"
-                                          rows="3">{{ old('remarks', $attendance->remarks) }}</textarea>
+                                <textarea
+                                    name="remarks"
+                                    class="admin-detail__textarea"
+                                    rows="3"
+                                >{{ old('remarks', $attendance->remarks) }}</textarea>
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
