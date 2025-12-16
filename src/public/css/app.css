@@ -369,7 +369,7 @@ body {
 .admin-detail__td {
     background-color: #fff;
     text-align: center;
-    
+
 }
 
 /* 日付の「2023年」「6月1日」を横並びに（中央寄せ） */
@@ -890,4 +890,88 @@ body {
 .admin-table thead th.admin-table__col-detail,
 .admin-table tbody td.admin-table__cell-detail {
     width: 10%;
+}
+
+/* =========================
+   申請一覧（管理者）
+   ========================= */
+
+/* タブ */
+.request-tabs {
+    display: flex;
+    gap: 40px;
+    margin: 24px 0 32px;
+    padding-left: 4px;
+    border-bottom: 1px solid #333;
+}
+
+.request-tab {
+    padding-bottom: 12px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #555;
+}
+
+.request-tab.is-active {
+    color: #000;
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+}
+
+/* テーブルを中央に集める */
+.request-table-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* タブコンテナ */
+.request-tabs-container {
+    max-width: 820px;
+    margin: 0 auto 18px;
+}
+
+/* タブリスト */
+.request-tabs {
+    display: flex;
+    gap: 48px;
+    align-items: flex-end;
+    padding: 0 6px;
+}
+
+/* タブリンク */
+.request-tab {
+    text-decoration: none;
+    color: #000;
+    font-weight: 700;
+    padding: 10px 6px;
+    border-bottom: 2px solid transparent;
+}
+
+.request-tab.is-active {
+    border-bottom: 2px solid #000;
+}
+
+/* タブ下の線 */
+.request-tabs-divider {
+    height: 1px;
+    background: #000;
+    opacity: 0.2;
+}
+
+/* 管理者タブ */
+.admin-tabs {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 24px;
+}
+
+.admin-tab-link {
+    /* デフォルトスタイル */
+}
+
+.admin-tab-link.is-active {
+    font-weight: bold;
 }

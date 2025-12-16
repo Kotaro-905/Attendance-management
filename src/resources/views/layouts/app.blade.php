@@ -63,7 +63,7 @@
                     <a href="{{ route('admin.staff.index') }}" class="site-header__nav-link">
                         スタッフ一覧
                     </a>
-                    <a href="#" class="site-header__nav-link" onclick="return false;">
+                    <a href="{{ route('admin.requests.index') }}" class="site-header__nav-link">
                         申請一覧
                     </a>
 

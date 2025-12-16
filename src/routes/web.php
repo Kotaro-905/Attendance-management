@@ -2,25 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
-// 一般ユーザー認証
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
-// 管理者認証
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController as AdminAuthenticatedSessionController;
-
-// 一般ユーザー用 勤怠
 use App\Http\Controllers\AttendanceController as UserAttendanceController;
-
-// 一般ユーザー用 打刻修正申請（使うなら）
 use App\Http\Controllers\StampCorrectionRequestController;
-
-// 管理者用 勤怠
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
-
-// 管理者用 スタッフ管理 / 打刻修正申請（使うなら）
 use App\Http\Controllers\Admin\StaffController;
-use App\Http\Controllers\Admin\StampCorrectionRequestController as AdminStampCorrectionRequestController;
+use App\Http\Controllers\Admin\AdminRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,11 +117,14 @@ Route::prefix('admin')
                 ->name('staff.index');
 
             // スタッフ月次勤怠一覧（新規追加）
-           Route::get('/staff/{user}/attendance', [\App\Http\Controllers\Admin\StaffController::class, 'attendance'])
-        ->name('staff.attendance');
+            Route::get('/staff/{user}/attendance', [\App\Http\Controllers\Admin\StaffController::class, 'attendance'])
+                ->name('staff.attendance');
 
-            // 打刻修正申請の管理画面を使うならここに追加
-            // Route::get('/stamp-corrections', [AdminStampCorrectionRequestController::class, 'index'])
-            //     ->name('stamp_corrections.index');
+            Route::get('/requests', [AdminRequestController::class, 'index'])
+                ->name('requests.index');
+
+            Route::get('/requests/{request}', [AdminRequestController::class, 'show'])
+                ->name('requests.show');
+            Route::post('/requests/{request}/approve', [AdminRequestController::class, 'approve'])->name('requests.approve');
         });
     });

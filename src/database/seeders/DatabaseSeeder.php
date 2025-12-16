@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             StaffDummySeeder::class,
             AttendanceDummySeeder::class,
+            CorrectionRequestDummySeeder::class
         ]);
     }
 }

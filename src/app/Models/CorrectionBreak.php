@@ -16,11 +16,14 @@ class CorrectionBreak extends Model
         'requested_break_end',
     ];
 
-    /**
-     * 親の修正申請
-     */
+    protected $casts = [
+        'break_no'              => 'integer',
+        'requested_break_start' => 'string',
+        'requested_break_end'   => 'string',
+    ];
+
     public function correctionRequest()
     {
-        return $this->belongsTo(\App\Models\CorrectionRequest::class, 'correction_request_id');
+        return $this->belongsTo(CorrectionRequest::class, 'correction_request_id');
     }
 }
