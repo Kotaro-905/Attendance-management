@@ -73,7 +73,6 @@ class AttendanceController extends Controller
                         sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60);
                 } else {
                     $attendance->break_duration_display = '-';
-                    // 0分扱いにしておく（合計計算では引かない）
                     $breakMinutes = 0;
                 }
 
@@ -84,7 +83,6 @@ class AttendanceController extends Controller
                     $totalMinutes = Carbon::parse($attendance->clock_in_at)
                         ->diffInMinutes(Carbon::parse($attendance->clock_out_at));
 
-                    // 休憩があれば引く（0なら何も起きない）
                     $totalMinutes -= $breakMinutes;
 
                     $attendance->total_duration_display =
@@ -104,7 +102,6 @@ class AttendanceController extends Controller
         ]);
     }
 
-
     /**
      * 勤怠詳細（管理者）
      */
@@ -120,9 +117,10 @@ class AttendanceController extends Controller
             ->sortBy('order')
             ->values();
 
+        // ▼ここが「10回まで」の原因だったので、上限を外す
         $breakRowCount = $breaks->count();
         $breakRowCount = max(1, $breakRowCount);
-        $breakRowCount = min(10, $breakRowCount);
+        // $breakRowCount = min(10, $breakRowCount); // ← 削除（回数無制限）
 
         return view('admin.attendance.show', [
             'attendance'    => $attendance,

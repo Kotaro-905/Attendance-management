@@ -85,7 +85,7 @@
                             </td>
                         </tr>
 
-                        {{-- 休憩（一般ユーザーが押した回数ぶん＋最低1行、最大10行） --}}
+                        {{-- 休憩（一般ユーザーが押した回数ぶん＋最低1行、上限なし） --}}
                         @for ($i = 1; $i <= $breakRowCount; $i++)
                             @php
                                 /** @var \App\Models\AttendanceBreak|null $break */
