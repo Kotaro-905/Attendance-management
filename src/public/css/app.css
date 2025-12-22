@@ -975,3 +975,103 @@ body {
 .admin-tab-link.is-active {
     font-weight: bold;
 }
+
+/* 見出し右にバッジを置く */
+.admin-heading--between {
+    justify-content: space-between;
+}
+
+.admin-heading__left {
+    display: flex;
+    align-items: center;
+}
+
+/* 反映済みバッジ */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+}
+
+.status-badge--approved {
+    border-color: #111;
+}
+
+
+
+/* 申請詳細：見出し右上にバッジ */
+.admin-heading--with-badge {
+    justify-content: space-between;
+}
+
+.admin-heading__left {
+    display: flex;
+    align-items: center;
+}
+
+.badge--pending {
+    background-color: #d9d9d9;
+    color: #555;
+}
+
+.badge--approved {
+    background-color: #d9d9d9;
+    color: #555;
+}
+
+/* 入力を画像っぽく小さめに */
+.admin-detail__input-time {
+    width: 92px;
+    padding: 6px 8px;
+}
+
+/* 備考を画像みたいに“細め中央”に */
+.admin-detail__textarea--narrow {
+    max-width: 360px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* ヘッダを左右に分ける（タイトル左・バッジ右） */
+.admin-heading--between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-heading__left {
+    display: flex;
+    align-items: center;
+}
+
+/* 承認済みバッジ（勤怠詳細と同じ） */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid #777;
+    background: #fff;
+    color: #000;
+}
+
+.status-badge--approved {
+    border-color: #777;
+}
+
+/* 承認待ち注意文（右寄せ） */
+.admin-detail__notice {
+    color: #ff4d4f;
+    text-align: right;
+    margin: 12px 0;
+}

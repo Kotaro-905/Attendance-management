@@ -31,16 +31,14 @@
             @auth
                 @if ($user && method_exists($user, 'isGeneral') && $user->isGeneral())
                     {{-- 一般ユーザー用メニュー --}}
-                    {{-- ここは画面があるので本物のルート --}}
                     <a href="{{ route('attendance.index') }}" class="site-header__nav-link">
                         勤怠
                     </a>
 
-                    {{-- まだ画面が無いのでダミーリンク --}}
-                    <a href="#" class="site-header__nav-link" onclick="return false;">
+                    <a href="{{ route('attendance.list') }}" class="site-header__nav-link">
                         勤怠一覧
                     </a>
-                    <a href="#" class="site-header__nav-link" onclick="return false;">
+                    <a href="{{ route('requests.index') }}" class="site-header__nav-link">
                         申請
                     </a>
 
@@ -54,12 +52,12 @@
 
                 @elseif ($user && method_exists($user, 'isAdmin') && $user->isAdmin())
                     {{-- 管理者用メニュー --}}
-                    {{-- 勤怠一覧だけ実装済み --}}
+                    
                     <a href="{{ route('admin.attendance.index') }}" class="site-header__nav-link">
                         勤怠一覧
                     </a>
 
-                    {{-- ここから下はまだなのでダミー --}}
+            
                     <a href="{{ route('admin.staff.index') }}" class="site-header__nav-link">
                         スタッフ一覧
                     </a>

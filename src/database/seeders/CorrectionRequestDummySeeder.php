@@ -13,36 +13,51 @@ class CorrectionRequestDummySeeder extends Seeder
 {
     public function run(): void
     {
-        // StaffDummySeeder で作った一般ユーザー（role=general）を想定
+        // 一般ユーザーのみ対象
         $users = User::where('role', User::ROLE_GENERAL)->get();
 
         foreach ($users as $user) {
-            // そのユーザーの勤怠から適当に2件拾う（無ければスキップ）
+
+            // 勤怠を複数取得（件数制限はここだけ）
             $attendances = Attendance::where('user_id', $user->id)
                 ->orderBy('work_date', 'asc')
-                ->take(2)
+                ->take(6) // ← 表示数を増減したい場合はここ
                 ->get();
 
             foreach ($attendances as $attendance) {
 
-                // 申請時刻を「少しズラした値」にする（例：出勤+5分、退勤+10分）
-                $reqIn  = $attendance->clock_in_at ? Carbon::parse($attendance->clock_in_at)->addMinutes(5)->format('H:i:s') : null;
-                $reqOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at)->addMinutes(10)->format('H:i:s') : null;
+                // 既に申請がある場合は作らない（増殖防止）
+                $exists = CorrectionRequest::where('attendance_id', $attendance->id)
+                    ->where('user_id', $user->id)
+                    ->exists();
 
+                if ($exists) {
+                    continue;
+                }
+
+                // 申請時刻を少しズラす
+                $reqIn  = $attendance->clock_in_at
+                    ? Carbon::parse($attendance->clock_in_at)->addMinutes(5)->format('H:i:s')
+                    : null;
+
+                $reqOut = $attendance->clock_out_at
+                    ? Carbon::parse($attendance->clock_out_at)->addMinutes(10)->format('H:i:s')
+                    : null;
+
+                // ✅ 全件 承認待ち（制限なし）
                 $req = CorrectionRequest::create([
-                    'attendance_id'           => $attendance->id,
-                    'user_id'                 => $user->id,
-                    'admin_id'                => null,
-                    'requested_work_date'     => $attendance->work_date,
-                    'requested_clock_in_time' => $reqIn,
-                    'requested_clock_out_time'=> $reqOut,
-                    'reason'                  => '電車遅延のため',
-                    'status'                  => 0, // 承認待ち
-                    'decided_at'              => null,
+                    'attendance_id'            => $attendance->id,
+                    'user_id'                  => $user->id,
+                    'admin_id'                 => null,
+                    'requested_work_date'      => $attendance->work_date,
+                    'requested_clock_in_time'  => $reqIn,
+                    'requested_clock_out_time' => $reqOut,
+                    'reason'                   => '電車遅延のため',
+                    'status'                   => 0,   // ← 常に承認待ち
+                    'decided_at'               => null,
                 ]);
 
-                // 休憩は子テーブルに入れる（correction_requests の break カラムは削除済み想定）
-                // attendanceの旧break_start_at / break_end_at があればそれを少しズラして登録
+                // 休憩申請
                 if (!empty($attendance->break_start_at) && !empty($attendance->break_end_at)) {
                     CorrectionBreak::create([
                         'correction_request_id' => $req->id,
@@ -51,7 +66,6 @@ class CorrectionRequestDummySeeder extends Seeder
                         'requested_break_end'   => Carbon::parse($attendance->break_end_at)->format('H:i:s'),
                     ]);
                 } else {
-                    // 無い場合は固定で1本入れてもOK（見本表示用）
                     CorrectionBreak::create([
                         'correction_request_id' => $req->id,
                         'break_no'              => 1,

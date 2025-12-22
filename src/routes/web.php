@@ -10,6 +10,8 @@ use App\Http\Controllers\StampCorrectionRequestController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\AdminRequestController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\RequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,17 +62,29 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware('auth')->group(function () {
 
-    // 勤怠登録画面（出勤前／出勤中／休憩中／退勤後）
+    // 勤怠登録
     Route::get('/attendance', [UserAttendanceController::class, 'index'])
         ->name('attendance.index');
-
-    // 勤怠登録の各操作（出勤・休憩入・休憩戻・退勤）
     Route::post('/attendance', [UserAttendanceController::class, 'store'])
         ->name('attendance.store');
 
-    // 打刻修正申請を使うならここにルートを追加
-    // Route::post('/stamp-corrections', [StampCorrectionRequestController::class, 'store'])
-    //     ->name('stamp_corrections.store');
+    // 勤怠一覧（月次）
+    Route::get('/attendance/list', [AttendanceController::class, 'list'])
+        ->name('attendance.list');
+
+    // ✅ 申請（attendance の {attendance} より上に置くのが鉄則）
+    Route::get('/requests', [RequestController::class, 'index'])
+        ->name('requests.index');
+    Route::get('/requests/{correctionRequest}', [RequestController::class, 'show'])
+    ->whereNumber('correctionRequest')
+    ->name('requests.show');
+
+    // ✅ 勤怠詳細（数字だけに限定して誤爆を防ぐ）
+    Route::get('/attendance/{attendance}', [UserAttendanceController::class, 'show'])
+        ->whereNumber('attendance')
+        ->name('attendance.show');
+
+    Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
 });
 
 /*

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminRequestController extends Controller
 {
@@ -35,7 +35,7 @@ class AdminRequestController extends Controller
         $request->load([
             'user',
             'attendance',
-            'breaks' => fn ($q) => $q->orderBy('break_no'),
+            'breaks' => fn($q) => $q->orderBy('break_no'),
         ]);
 
         return view('admin.requests.show', compact('request'));
@@ -46,17 +46,37 @@ class AdminRequestController extends Controller
      */
     public function approve(CorrectionRequest $request)
     {
-        $request->update([
-            'status'     => 1,
-            'admin_id'   => Auth::id(),
-            'decided_at' => now(),
-        ]);
+        $request->load('breaks', 'attendance');
 
-        // もし「承認したら attendances を実値で更新」まで要件に入れるならここで反映処理を追加します。
-        // まずは「承認待ち → 承認済みに移動」だけならこれでOK。
+        DB::transaction(function () use ($request) {
 
-        return redirect()
-            ->route('admin.requests.index', ['status' => 'pending'])
-            ->with('message', '承認しました');
+            // 1. 申請を承認済みに
+            $request->update([
+                'status'     => 1, // 承認済み
+                'admin_id'   => auth()->id(),
+                'decided_at' => now(),
+            ]);
+
+            $attendance = $request->attendance;
+
+            // 2. 勤怠本体を申請内容で更新
+            $attendance->update([
+                'clock_in_at'  => $request->requested_clock_in_time,
+                'clock_out_at' => $request->requested_clock_out_time,
+            ]);
+
+            // 3. 休憩を申請内容で入れ替え
+            $attendance->breaks()->delete();
+
+            foreach ($request->breaks as $br) {
+                $attendance->breaks()->create([
+                    'order'    => $br->break_no,
+                    'start_at' => $br->requested_break_start,
+                    'end_at'   => $br->requested_break_end,
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.requests.show', $request);
     }
 }
