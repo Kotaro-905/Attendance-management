@@ -8,6 +8,7 @@ use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StaffController extends Controller
 {
@@ -19,7 +20,7 @@ class StaffController extends Controller
         $staff = User::query()
             ->when(
                 Schema::hasColumn('users', 'is_admin'),
-                fn ($q) => $q->where('is_admin', false)
+                fn($q) => $q->where('is_admin', false)
             )
             ->where('email', '!=', 'admin@example.com')
             ->orderBy('id')
@@ -32,84 +33,152 @@ class StaffController extends Controller
      * スタッフ別 月次勤怠一覧（管理者）
      */
     public function attendance(User $user, Request $request)
-{
-    $month = $request->query('month', now()->format('Y-m')); // 例: 2023-06
+    {
+        $month = $request->query('month', now()->format('Y-m')); // 例: 2023-06
 
-    $monthStart = Carbon::parse($month . '-01')->startOfMonth();
-    $monthEnd   = $monthStart->copy()->endOfMonth();
+        $monthStart = Carbon::parse($month . '-01')->startOfMonth();
+        $monthEnd   = $monthStart->copy()->endOfMonth();
 
-    // work_date が date/datetime どちらでも確実に拾う
-    $attendances = Attendance::with('breaks')
-        ->where('user_id', $user->id)
-        ->whereDate('work_date', '>=', $monthStart->toDateString())
-        ->whereDate('work_date', '<=', $monthEnd->toDateString())
-        ->get()
-        // key を必ず "Y-m-d" に揃える（←ここが超重要）
-        ->keyBy(fn ($a) => Carbon::parse($a->work_date)->toDateString());
+        // work_date が date/datetime どちらでも確実に拾う
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->whereDate('work_date', '>=', $monthStart->toDateString())
+            ->whereDate('work_date', '<=', $monthEnd->toDateString())
+            ->get()
+            // key を必ず "Y-m-d" に揃える（←ここが超重要）
+            ->keyBy(fn($a) => Carbon::parse($a->work_date)->toDateString());
 
-    $days = [];
+        $days = [];
 
-    for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
-        $key = $d->toDateString();
-        $a = $attendances->get($key);
+        for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
+            $key = $d->toDateString();
+            $a = $attendances->get($key);
 
-        // 出勤・退勤
-        $clockIn  = ($a && $a->clock_in_at)  ? Carbon::parse($a->clock_in_at)->format('H:i')  : '-';
-        $clockOut = ($a && $a->clock_out_at) ? Carbon::parse($a->clock_out_at)->format('H:i') : '-';
+            // 出勤・退勤
+            $clockIn  = ($a && $a->clock_in_at)  ? Carbon::parse($a->clock_in_at)->format('H:i')  : '-';
+            $clockOut = ($a && $a->clock_out_at) ? Carbon::parse($a->clock_out_at)->format('H:i') : '-';
 
-        // 休憩合計（breaks優先、無ければ旧カラム）
-        $breakMinutes = 0;
+            // 休憩合計（breaks優先、無ければ旧カラム）
+            $breakMinutes = 0;
 
-        if ($a) {
-            if ($a->relationLoaded('breaks') && $a->breaks->count() > 0) {
-                foreach ($a->breaks as $br) {
-                    if ($br->start_at && $br->end_at) {
-                        $breakMinutes += Carbon::parse($br->start_at)
-                            ->diffInMinutes(Carbon::parse($br->end_at));
+            if ($a) {
+                if ($a->relationLoaded('breaks') && $a->breaks->count() > 0) {
+                    foreach ($a->breaks as $br) {
+                        if ($br->start_at && $br->end_at) {
+                            $breakMinutes += Carbon::parse($br->start_at)
+                                ->diffInMinutes(Carbon::parse($br->end_at));
+                        }
                     }
+                } elseif (!empty($a->break_start_at) && !empty($a->break_end_at)) {
+                    $breakMinutes = Carbon::parse($a->break_start_at)
+                        ->diffInMinutes(Carbon::parse($a->break_end_at));
                 }
-            } elseif (!empty($a->break_start_at) && !empty($a->break_end_at)) {
-                $breakMinutes = Carbon::parse($a->break_start_at)
-                    ->diffInMinutes(Carbon::parse($a->break_end_at));
             }
+
+            $breakDisp = ($breakMinutes > 0)
+                ? sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60)
+                : '-';
+
+            // 合計（出勤〜退勤 − 休憩）
+            $totalDisp = '-';
+            if ($a && $a->clock_in_at && $a->clock_out_at) {
+                $totalMinutes = Carbon::parse($a->clock_in_at)
+                    ->diffInMinutes(Carbon::parse($a->clock_out_at)) - $breakMinutes;
+
+                if ($totalMinutes < 0) $totalMinutes = 0;
+
+                $totalDisp = sprintf('%d:%02d', intdiv($totalMinutes, 60), $totalMinutes % 60);
+            }
+
+            $days[] = [
+                'date_label'    => $d->copy()->locale('ja')->isoFormat('MM/DD(ddd)'),
+                'clock_in'      => $clockIn,
+                'clock_out'     => $clockOut,
+                'break'         => $breakDisp,
+                'total'         => $totalDisp,
+                'attendance_id' => $a?->id,
+                'date'          => $key,
+            ];
         }
 
-        $breakDisp = ($breakMinutes > 0)
-            ? sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60)
-            : '-';
+        $prevMonth = $monthStart->copy()->subMonth()->format('Y-m');
+        $nextMonth = $monthStart->copy()->addMonth()->format('Y-m');
 
-        // 合計（出勤〜退勤 − 休憩）
-        $totalDisp = '-';
-        if ($a && $a->clock_in_at && $a->clock_out_at) {
-            $totalMinutes = Carbon::parse($a->clock_in_at)
-                ->diffInMinutes(Carbon::parse($a->clock_out_at)) - $breakMinutes;
-
-            if ($totalMinutes < 0) $totalMinutes = 0;
-
-            $totalDisp = sprintf('%d:%02d', intdiv($totalMinutes, 60), $totalMinutes % 60);
-        }
-
-        $days[] = [
-            'date_label'    => $d->copy()->locale('ja')->isoFormat('MM/DD(ddd)'),
-            'clock_in'      => $clockIn,
-            'clock_out'     => $clockOut,
-            'break'         => $breakDisp,
-            'total'         => $totalDisp,
-            'attendance_id' => $a?->id,
-            'date'          => $key,
-        ];
+        return view('admin.staff.attendance', compact(
+            'user',
+            'month',
+            'monthStart',
+            'prevMonth',
+            'nextMonth',
+            'days'
+        ));
     }
 
-    $prevMonth = $monthStart->copy()->subMonth()->format('Y-m');
-    $nextMonth = $monthStart->copy()->addMonth()->format('Y-m');
+    public function exportCsv(Request $request, User $user): StreamedResponse
+    {
+        $month = $request->query('month'); // 'YYYY-MM'
+        $monthStart = $month ? Carbon::createFromFormat('Y-m', $month)->startOfMonth() : now()->startOfMonth();
+        $monthEnd   = $monthStart->copy()->endOfMonth();
 
-    return view('admin.staff.attendance', compact(
-        'user',
-        'month',
-        'monthStart',
-        'prevMonth',
-        'nextMonth',
-        'days'
-    ));
-}
+        // この月の勤怠（必要に応じてリレーション）
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+            ->orderBy('work_date')
+            ->get()
+            ->keyBy(fn($a) => Carbon::parse($a->work_date)->toDateString());
+
+        $fileName = sprintf('%s_%s_attendance.csv', $user->id, $monthStart->format('Y-m'));
+
+        return response()->streamDownload(function () use ($monthStart, $monthEnd, $attendances) {
+            $out = fopen('php://output', 'w');
+
+            // Excel文字化け対策（必要ならON）
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // ヘッダー
+            fputcsv($out, ['日付', '出勤', '退勤', '休憩合計', '勤務合計']);
+
+            // 1日ずつ出す（画面の $days と同じ発想）
+            for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
+                $date = $d->toDateString();
+                $a = $attendances->get($date);
+
+                $clockIn = $a?->clock_in_at ? Carbon::parse($a->clock_in_at)->format('H:i') : '';
+                $clockOut = $a?->clock_out_at ? Carbon::parse($a->clock_out_at)->format('H:i') : '';
+
+                // 休憩合計（分）
+                $breakMinutes = 0;
+                if ($a && $a->breaks) {
+                    foreach ($a->breaks as $br) {
+                        if ($br->start_at && $br->end_at) {
+                            $breakMinutes += Carbon::parse($br->start_at)->diffInMinutes(Carbon::parse($br->end_at));
+                        }
+                    }
+                }
+
+                // 勤務合計（分）= 出退勤差 - 休憩
+                $workMinutes = '';
+                if ($a && $a->clock_in_at && $a->clock_out_at) {
+                    $total = Carbon::parse($a->clock_in_at)->diffInMinutes(Carbon::parse($a->clock_out_at));
+                    $workMinutes = max(0, $total - $breakMinutes);
+                }
+
+                $breakStr = $breakMinutes === 0 ? '' : sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60);
+                $workStr  = $workMinutes === '' ? '' : sprintf('%d:%02d', intdiv($workMinutes, 60), $workMinutes % 60);
+
+                fputcsv($out, [
+                    $d->format('Y/m/d'),
+                    $clockIn,
+                    $clockOut,
+                    $breakStr,
+                    $workStr,
+                ]);
+            }
+
+            fclose($out);
+        }, $fileName, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
 }

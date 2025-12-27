@@ -1075,3 +1075,55 @@ body {
     text-align: right;
     margin: 12px 0;
 }
+
+/* テキストの時間を「入力っぽい箱」に見せる（画像1の雰囲気） */
+.admin-detail__time-text {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.admin-detail__time-box {
+    display: inline-block;
+    min-width: 84px;
+    padding: 10px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: #fff;
+    font-weight: 600;
+}
+
+/* 承認ボタンを右下寄せ（画像1） */
+.admin-detail__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* 既存の .admin-detail__submit が大きすぎるなら上書き */
+.admin-detail__submit {
+    width: 140px;
+    height: 48px;
+    border-radius: 6px;
+}
+
+.admin-detail__table-wrap--narrow {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.form-error-item {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.admin-detail__td .form-error-item {
+    display: block;
+}
+
+.staff-month-export__button {
+    display: inline-block;
+    text-decoration: none;
+    
+}

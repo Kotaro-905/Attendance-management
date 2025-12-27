@@ -32,17 +32,6 @@
             @csrf
             @method('PUT')
 
-            {{-- バリデーションエラー表示 --}}
-            @if ($errors->any())
-                <div class="form-errors">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li class="form-error-item">{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <div class="admin-detail__table-wrap">
                 <table class="admin-detail__table">
                     <tbody>
@@ -82,6 +71,13 @@
                                     class="admin-detail__input-time"
                                     value="{{ $clockOutValue }}"
                                 >
+
+                                @error('clock_in_at')
+      <p class="form-error-item">{{ $message }}</p>
+    @enderror
+    @error('clock_out_at')
+      <p class="form-error-item">{{ $message }}</p>
+    @enderror
                             </td>
                         </tr>
 
@@ -125,6 +121,13 @@
                                         class="admin-detail__input-time"
                                         value="{{ $endValue }}"
                                     >
+
+                                    @error("breaks.$i.start")
+      <p class="form-error-item">{{ $message }}</p>
+    @enderror
+    @error("breaks.$i.end")
+      <p class="form-error-item">{{ $message }}</p>
+    @enderror
                                 </td>
                             </tr>
                         @endfor
@@ -138,6 +141,10 @@
                                     class="admin-detail__textarea"
                                     rows="3"
                                 >{{ old('remarks', $attendance->remarks) }}</textarea>
+
+                                @error('remarks')
+      <p class="form-error-item">{{ $message }}</p>
+    @enderror
                             </td>
                         </tr>
                     </tbody>

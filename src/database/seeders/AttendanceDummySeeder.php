@@ -12,9 +12,13 @@ class AttendanceDummySeeder extends Seeder
 {
     public function run(): void
     {
+        Attendance::where(function ($q) {
+            $q->whereDate('work_date', '<', '2025-02-01')
+                ->orWhereDate('work_date', '>', '2025-10-31');
+        })->delete();
         // ★ ダミーを入れたい期間（必要ならここだけ変える）
-        $startDate = Carbon::parse('2025-01-01');
-        $endDate   = Carbon::parse('2026-02-31');
+        $startDate = Carbon::parse('2025-02-01');
+        $endDate   = Carbon::parse('2025-10-31');
 
         // ★ 一般ユーザー（role=general）を全部対象にする
         $users = User::where('role', User::ROLE_GENERAL)->get();

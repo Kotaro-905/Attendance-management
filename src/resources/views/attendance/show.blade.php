@@ -57,6 +57,14 @@
                                 <span class="admin-detail__tilde">〜</span>
                                 <input class="admin-detail__input-time" type="time" name="clock_out_at"
                                     value="{{ old('clock_out_at', $clockOutValue) }}" {{ $disabled }}>
+
+                                    {{-- エラー（FN029-1/3 をここで拾う想定） --}}
+        @error('clock_in_at')
+            <p class="form-error-item">{{ $message }}</p>
+        @enderror
+        @error('clock_out_at')
+            <p class="form-error-item">{{ $message }}</p>
+        @enderror
                             </td>
                         </tr>
 
@@ -78,6 +86,13 @@
                                         name="breaks[{{ $i }}][end]"
                                         value="{{ old("breaks.$i.end", $end ? Carbon::parse($end)->format('H:i') : '') }}"
                                         {{ $disabled }}>
+
+                                        @error("breaks.$i.start")
+    <p class="form-error-item">{{ $message }}</p>
+@enderror
+@error("breaks.$i.end")
+    <p class="form-error-item">{{ $message }}</p>
+@enderror
                                 </td>
                             </tr>
                         @endfor
@@ -86,6 +101,11 @@
                             <th class="admin-detail__th">備考</th>
                             <td class="admin-detail__td">
                                 <textarea class="admin-detail__textarea" name="reason" rows="3" {{ $disabled }}>{{ old('reason', $displayReason) }}</textarea>
+
+                                @error('reason')
+    <p class="form-error-item">{{ $message }}</p>
+@enderror
+
                             </td>
                         </tr>
                     </tbody>

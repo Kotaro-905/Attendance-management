@@ -7,7 +7,7 @@ use App\Models\CorrectionRequest;
 use App\Models\CorrectionBreak;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use App\Http\Requests\AttendanceCorrectionRequest;
 
 class RequestController extends Controller
 {
@@ -52,9 +52,9 @@ class RequestController extends Controller
      * 修正申請 作成（一般ユーザー）
      * attendance.show の「修正」ボタンから呼ぶ想定
      */
-    public function store(Request $httpRequest)
+    public function store(AttendanceCorrectionRequest $httpRequest)
     {
-        $data = $httpRequest->validate([
+        $data = $httpRequest->validated([
             'attendance_id' => ['required', 'integer', 'exists:attendances,id'],
             'clock_in_at'   => ['nullable', 'date_format:H:i'],
             'clock_out_at'  => ['nullable', 'date_format:H:i'],

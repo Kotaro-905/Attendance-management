@@ -38,7 +38,9 @@ class AdminRequestController extends Controller
             'breaks' => fn($q) => $q->orderBy('break_no'),
         ]);
 
-        return view('admin.requests.show', compact('request'));
+        return view('admin.requests.show', [
+    'request' => $request,
+]);
     }
 
     /**
