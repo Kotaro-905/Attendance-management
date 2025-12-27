@@ -114,8 +114,8 @@ php artisan test
 | カラム名 | データ型 | NULL | キー | デフォルト値 | 説明 |
 |---------|---------|------|------|------------|------|
 | id | BIGINT UNSIGNED | NO | PK | AUTO_INCREMENT | 勤怠ID |
-| user_id | BIGINT UNSIGNED | NO | FK, UNIQUE(user_id, work_date) | | ユーザーID |
-| work_date | DATE | NO | UNIQUE(user_id, work_date) | | 勤務日 |
+| user_id | BIGINT UNSIGNED | NO | FK | | ユーザーID |
+| work_date | DATE | NO | | | 勤務日 |
 | clock_in_at | TIME | YES | | NULL | 出勤時刻 |
 | break_start_at | TIME | YES | | NULL | 休憩開始時刻（旧仕様、複数休憩には未対応） |
 | break_end_at | TIME | YES | | NULL | 休憩終了時刻（旧仕様、複数休憩には未対応） |
@@ -176,9 +176,6 @@ php artisan test
 | decided_at | TIMESTAMP | YES | | NULL | 承認/却下を行った日時 |
 | created_at | TIMESTAMP | YES | | NULL | 作成日時 |
 | updated_at | TIMESTAMP | YES | | NULL | 更新日時 |
-
-**注意:**
-- `requested_break_start_time`と`requested_break_end_time`カラムは削除されました（複数休憩対応のため、correction_breaksテーブルに移行）
 
 **制約:**
 - FOREIGN KEY: attendance_id → attendances(id) ON DELETE CASCADE
