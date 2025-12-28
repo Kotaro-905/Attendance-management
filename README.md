@@ -4,7 +4,7 @@
 
 ### Dockerビルド
 
-1. `git clone git@github.com:Kotaro-905/ec-site.git`
+1. `git clone git@github.com:Kotaro-905/Attendance-management.git`
 2. `docker-compose up -d --build`
 
 > 💡 **注意**
