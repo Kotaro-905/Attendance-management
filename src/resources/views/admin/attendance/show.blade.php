@@ -36,34 +36,35 @@
                 <table class="admin-detail__table admin-detail__table--wide-label">
                     <tbody>
                         <tr>
-                            <th class="admin-detail__th">名前</th>
-                            <td class="admin-detail__td">
-                                {{ $attendance->user->name }}
-                            </td>
-                        </tr>
+  <th class="admin-detail__th">名前</th>
+  <td class="admin-detail__td admin-detail__td--name">
+    {{ $attendance->user->name }}
+  </td>
+</tr>
 
                         <tr>
-                            <th class="admin-detail__th">日付</th>
-                            <td class="admin-detail__td admin-detail__date-row">
-                                <span>{{ $workDate->format('Y年') }}</span>
-                                <span>{{ $workDate->format('n月j日') }}</span>
-                            </td>
-                        </tr>
+  <th class="admin-detail__th">日付</th>
+  <td class="admin-detail__td admin-detail__td--date">
+    <span class="admin-detail__date-item admin-detail__date-item--left">{{ $workDate->format('Y年') }}</span>
+    <span class="admin-detail__date-item admin-detail__date-item--right">{{ $workDate->format('n月j日') }}</span>
+  </td>
+</tr>
 
                         <tr>
                             <th class="admin-detail__th">出勤・退勤</th>
-                            <td class="admin-detail__td admin-detail__time-range">
-                                <input type="time" name="clock_in_at" class="admin-detail__input-time" value="{{ $clockInValue }}">
-                                <span class="admin-detail__tilde">〜</span>
-                                <input type="time" name="clock_out_at" class="admin-detail__input-time" value="{{ $clockOutValue }}">
+                            <td class="admin-detail__td admin-detail__td--stack">
+  <div class="admin-detail__time-range">
+    <input type="time" name="clock_in_at" class="admin-detail__input-time" value="{{ $clockInValue }}">
+    <span class="admin-detail__tilde">〜</span>
+    <input type="time" name="clock_out_at" class="admin-detail__input-time" value="{{ $clockOutValue }}">
+  </div>
 
-                                @error('clock_in_at')
-                                    <p class="form-error-item">{{ $message }}</p>
-                                @enderror
-                                @error('clock_out_at')
-                                    <p class="form-error-item">{{ $message }}</p>
-                                @enderror
-                            </td>
+  <div class="admin-detail__errors">
+    @error('clock_in_at')  <p class="form-error-item">{{ $message }}</p> @enderror
+    @error('clock_out_at') <p class="form-error-item">{{ $message }}</p> @enderror
+  </div>
+</td>
+
                         </tr>
 
                         @for ($i = 1; $i <= $breakRowCount; $i++)
@@ -86,18 +87,19 @@
 
                             <tr>
                                 <th class="admin-detail__th">休憩{{ $i }}</th>
-                                <td class="admin-detail__td admin-detail__time-range">
-                                    <input type="time" name="breaks[{{ $i }}][start]" class="admin-detail__input-time" value="{{ $startValue }}">
-                                    <span class="admin-detail__tilde">〜</span>
-                                    <input type="time" name="breaks[{{ $i }}][end]" class="admin-detail__input-time" value="{{ $endValue }}">
+                                <td class="admin-detail__td admin-detail__td--stack">
+  <div class="admin-detail__time-range">
+    <input type="time" name="breaks[{{ $i }}][start]" class="admin-detail__input-time" value="{{ $startValue }}">
+    <span class="admin-detail__tilde">〜</span>
+    <input type="time" name="breaks[{{ $i }}][end]" class="admin-detail__input-time" value="{{ $endValue }}">
+  </div>
 
-                                    @error("breaks.$i.start")
-                                        <p class="form-error-item">{{ $message }}</p>
-                                    @enderror
-                                    @error("breaks.$i.end")
-                                        <p class="form-error-item">{{ $message }}</p>
-                                    @enderror
-                                </td>
+  <div class="admin-detail__errors">
+    @error("breaks.$i.start") <p class="form-error-item">{{ $message }}</p> @enderror
+    @error("breaks.$i.end")   <p class="form-error-item">{{ $message }}</p> @enderror
+  </div>
+</td>
+
                             </tr>
                         @endfor
 

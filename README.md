@@ -25,13 +25,6 @@
 
 ---
 
-### 環境変数
-
-`STRIPE_KEY` と `STRIPE_SECRET` は未設定です。
-Stripe管理画面よりキーを取得して設定してください。
-
----
-
 ## 使用技術
 
 * PHP **8.1.33**
@@ -48,7 +41,7 @@ Stripe管理画面よりキーを取得して設定してください。
 ### 1. テスト用データベースを作成
 
 ```bash
-docker exec -it ec-site-mysql-1 bash
+docker exec -it attendance-management-mysql-1 bash
 mysql -u root -p
 # パスワード: root
 CREATE DATABASE laravel_test;

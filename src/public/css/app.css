@@ -1,5 +1,6 @@
-/* 共通 */
-
+/* =========================
+   共通
+   ========================= */
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -7,10 +8,9 @@ body {
     background-color: #222;
 }
 
-/* =====================
+/* =========================
    ヘッダー（app.blade.php 用）
-   ===================== */
-
+   ========================= */
 .site-header {
     background-color: #000;
     height: 56px;
@@ -27,14 +27,10 @@ body {
     box-sizing: border-box;
 }
 
-/* ロゴ */
-
 .site-header__logo img {
     display: block;
     height: 32px;
 }
-
-/* ナビ（クラス名を .site-header__nav 系に統一） */
 
 .site-header__nav {
     display: flex;
@@ -42,19 +38,15 @@ body {
     gap: 24px;
 }
 
-/* 通常リンク「勤怠 / 勤怠一覧 / 申請」 */
 .site-header__nav-link {
     color: #fff;
     text-decoration: none;
     font-size: 14px;
 }
 
-/* hover 時の下線だけ付ける */
 .site-header__nav-link:hover {
     text-decoration: underline;
 }
-
-/* ログアウトボタンまわり */
 
 .site-header__logout-form {
     margin: 0 0 0 16px;
@@ -69,22 +61,18 @@ body {
     cursor: pointer;
 }
 
-/* クリック時の軽い変化（お好みで） */
 .site-header__logout-form button:hover {
     background-color: #fff;
 }
-
-/* メイン領域 */
 
 .site-main {
     min-height: calc(100vh - 56px);
     background-color: #222;
 }
 
-/* =====================
-   勤怠登録画面
-   ===================== */
-
+/* =========================
+   勤怠登録画面（一般ユーザー）
+   ========================= */
 .attendance-main {
     min-height: calc(100vh - 56px);
     display: flex;
@@ -103,8 +91,6 @@ body {
     box-sizing: border-box;
     text-align: center;
 }
-
-/* ステータスバッジ・日付・時刻 */
 
 .attendance-status-wrap {
     margin-bottom: 40px;
@@ -129,8 +115,6 @@ body {
     font-weight: 700;
     margin: 0 0 48px;
 }
-
-/* ボタン */
 
 .attendance-buttons {
     margin-top: 16px;
@@ -169,15 +153,11 @@ body {
     font-size: 18px;
 }
 
-/* =====================
-   管理者 勤怠一覧画面
-   ===================== */
-
-/* 全体レイアウト */
-
+/* =========================
+   管理者 共通レイアウト
+   ========================= */
 .admin-main {
     min-height: calc(100vh - 56px);
-    /* ヘッダー分を引く */
     background-color: #222;
     display: flex;
     justify-content: center;
@@ -194,8 +174,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 見出し部分 */
-
+/* 見出し */
 .admin-heading {
     display: flex;
     align-items: center;
@@ -215,8 +194,39 @@ body {
     font-weight: 700;
 }
 
-/* 日付ナビ */
+.admin-heading--between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.admin-heading__left {
+    display: flex;
+    align-items: center;
+}
+
+/* 承認済みバッジ */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid #777;
+    background: #fff;
+    color: #000;
+}
+
+.status-badge--approved {
+    border-color: #777;
+}
+
+/* =========================
+   管理者：勤怠一覧
+   ========================= */
 .admin-date-nav {
     display: flex;
     align-items: center;
@@ -250,14 +260,13 @@ body {
     font-size: 14px;
 }
 
-/* 一覧テーブル */
-
 .admin-table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
     margin-top: 16px;
     font-size: 13px;
+    table-layout: fixed;
 }
 
 .admin-table th,
@@ -278,29 +287,27 @@ body {
 
 .admin-table__col-time {
     width: 12%;
-    text-align: center;
 }
 
 .admin-table__col-total {
     width: 10%;
-    text-align: center;
 }
 
 .admin-table__col-detail {
     width: 10%;
+}
+
+.admin-table thead th.admin-table__col-time,
+.admin-table thead th.admin-table__col-total,
+.admin-table thead th.admin-table__col-detail {
     text-align: center;
 }
 
-.admin-table td.admin-table__col-time,
-.admin-table th.admin-table__col-time,
-.admin-table td.admin-table__col-total,
-.admin-table th.admin-table__col-total,
-.admin-table td.admin-table__col-detail,
-.admin-table th.admin-table__col-detail {
+.admin-table tbody td.admin-table__cell-time,
+.admin-table tbody td.admin-table__cell-total,
+.admin-table tbody td.admin-table__cell-detail {
     text-align: center;
 }
-
-/* 詳細リンク */
 
 .admin-table__detail-link {
     color: #007bff;
@@ -312,103 +319,116 @@ body {
     text-decoration: underline;
 }
 
-/* データなしメッセージ */
-
 .admin-empty {
     margin-top: 16px;
     font-size: 14px;
 }
 
-/* =====================
-   管理者 勤怠詳細画面
-   ===================== */
-
-/* 詳細画面だけカードを細めにする */
+/* =========================
+   管理者/一般：勤怠詳細（共通ベース）
+   ※ ここは「1回だけ」定義して固定（衝突させない）
+   ========================= */
 .admin-card.admin-detail {
-    max-width: 880px;
-    /* ← 少しだけ広めにして横長カードに */
+    max-width: 1080px;
     margin: 40px auto 0;
-    /* 上の余白も少し増やす＋中央寄せ */
     padding: 40px 56px 48px;
-    /* Figma っぽい余白 */
     box-sizing: border-box;
+
+    /* Figma寄せの基準値 */
+    --detail-wrap-w: 900px;
+    /* テーブル見た目幅 */
+    --label-w: 260px;
+    /* 左ラベル列 */
+    --field-w: 110px;
+    /* time input 幅（Figma寄せ） */
+    --detail-w: 420px;
+    /* 右カラムの「揃える箱」幅 */
 }
 
-/* テーブルラッパ */
-.admin-detail__table-wrap {
+.admin-card.admin-detail .admin-detail__table-wrap {
     margin-top: 24px;
+    max-width: var(--detail-wrap-w);
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* テーブル基礎 */
+.admin-card.admin-detail .admin-detail__table-wrap--narrow {
+    max-width: var(--detail-wrap-w);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .admin-detail__table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
     table-layout: fixed;
-    /* 列幅を安定させる */
 }
 
-/* セル共通 */
 .admin-detail__th,
 .admin-detail__td {
     padding: 14px 24px;
     border-bottom: 1px solid #e0e0e0;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
-/* 左側ラベル列 */
 .admin-detail__th {
-    width: 180px;
-    /* ← ここを広げると全行が綺麗に縦でそろう */
+    width: var(--label-w);
     background-color: #f5f5f5;
     font-weight: 500;
     text-align: left;
 }
 
-/* 右側入力列 */
 .admin-detail__td {
     background-color: #fff;
     text-align: center;
-
+    /* 右カラムは基本中央 */
 }
 
-/* 日付の「2023年」「6月1日」を横並びに（中央寄せ） */
-.admin-detail__date-row {
-    display: flex;
-    justify-content: center;
-    gap: 64px;
-    /* ← Figma のように広めの間隔 */
-    align-items: center;
-}
-
-/* 時刻レンジ（出勤・退勤 / 休憩 / 休憩2） */
-.admin-detail__time-range {
-    display: flex;
-    justify-content: center;
-    /* ← 入力欄をセル中央に寄せる */
-    align-items: center;
-    gap: 32px;
-    /* 入力欄と「〜」の間隔を広めに */
-}
-
-/* time入力のスタイル */
+/* time入力（共通） */
 .admin-detail__input-time {
-    width: 140px;
-    padding: 8px 10px;
+    width: var(--field-w);
+    height: 34px;
+    padding: 6px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
     box-sizing: border-box;
     text-align: center;
-    /* ← 中身（時刻）も中央寄せ */
+    font-weight: 700;
+    color: #000;
+    opacity: 1;
 }
 
-/* 「〜」 */
+.admin-detail__input-time:disabled {
+    -webkit-text-fill-color: #000;
+}
+
+/* Chrome系：時計アイコンを消す（必要なら） */
+.admin-detail__input-time::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}
+
+.admin-detail__input-time {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 .admin-detail__tilde {
     font-size: 14px;
 }
 
-/* 備考テキストエリア */
+/* 時間レンジ（共通：中身だけを横並び） */
+.admin-detail__time-range {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+}
+
+/* 備考（基本） */
 .admin-detail__textarea {
     width: 100%;
     box-sizing: border-box;
@@ -419,14 +439,22 @@ body {
     background-color: #fff;
 }
 
-/* 下部ボタンエリア */
+/* 勤怠詳細：備考を細め中央寄せ（Figma 344×100） */
+.admin-detail__textarea--narrow {
+    width: 344px;
+    min-height: 100px;
+    display: block;
+    margin: 0 auto;
+    resize: none;
+}
+
+/* ボタンエリア */
 .admin-detail__actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 24px;
 }
 
-/* 修正ボタン */
 .admin-detail__submit {
     min-width: 140px;
     padding: 10px 32px;
@@ -439,29 +467,222 @@ body {
 }
 
 /* =========================
+   フォームエラー
+   ========================= */
+.form-error-item {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.admin-detail__td .form-error-item {
+    display: block;
+}
+
+.admin-detail__td--stack {
+    text-align: center;
+}
+
+.admin-detail__errors {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.admin-detail__errors .form-error-item {
+    margin: 0;
+}
+
+/* =========================
+   勤怠詳細（attendance/show, admin/attendance/show）
+   「名前」と「日付」を“同じ開始位置”に固定する
+   ※ td は table-cell のまま（ここが超重要）
+   ========================= */
+.admin-card.admin-detail .admin-detail__table--wide-label .admin-detail__th {
+    width: var(--label-w);
+}
+
+.admin-card.admin-detail .admin-detail__table--wide-label .admin-detail__td {
+    text-align: center;
+}
+
+/* 名前：箱幅で左揃え（table-cellを壊さない） */
+.admin-card.admin-detail .admin-detail__table--wide-label td.admin-detail__td--name {
+    text-align: left;
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 日付：ここで flex を使わない（ちりちり原因） */
+.admin-card.admin-detail .admin-detail__table--wide-label td.admin-detail__td--date {
+    text-align: center;
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+/* 日付2要素を左右に（inline-blockで実現） */
+.admin-card.admin-detail .admin-detail__table--wide-label td.admin-detail__td--date .admin-detail__date-item {
+    display: inline-block;
+    width: 50%;
+    white-space: nowrap;
+}
+
+.admin-card.admin-detail .admin-detail__table--wide-label td.admin-detail__td--date .admin-detail__date-item--left {
+    text-align: left;
+}
+
+.admin-card.admin-detail .admin-detail__table--wide-label td.admin-detail__td--date .admin-detail__date-item--right {
+    text-align: right;
+}
+
+/* =========================
+   申請詳細（requests/show, admin/requests/show）
+   “名前・日付・時間”を同じ開始位置に揃える
+   ※ td を flex にしない（ここも重要）
+   ========================= */
+
+/* 承認待ちメッセージ */
+.admin-detail__notice {
+    color: #ff4d4f;
+    text-align: left;
+    max-width: var(--detail-wrap-w);
+    margin: 12px auto 0;
+}
+
+/* 申請詳細の td は中央基準 */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td {
+    text-align: center;
+}
+
+/* 名前：箱（--detail-w）を中央に置き、箱の中は左寄せ */
+.admin-card.admin-detail table.admin-detail__table--request .admin-detail__name {
+    display: block;
+    width: var(--detail-w);
+    margin: 0 auto;
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 日付：td自体は table-cell のまま。中身だけ箱で左右に */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__date-row {
+    /* display:flex をやめる（ちりちり防止） */
+    display: table-cell;
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__date-row span {
+    display: inline-block;
+    width: 50%;
+    white-space: nowrap;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__date-row span:first-child {
+    text-align: left;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__date-row span:last-child {
+    text-align: right;
+}
+
+/* 時間：requests側は td に admin-detail__time-range が付いてるので td を壊さず箱で寄せる */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__time-range {
+    display: table-cell;
+    /* 念のため固定 */
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+}
+
+/* 申請詳細：備考を細く（1枚目寄せ） */
+.admin-card.admin-detail table.admin-detail__table--request .admin-detail__textarea {
+    width: 344px;
+    min-height: 100px;
+    display: block;
+    margin: 0 auto;
+    resize: none;
+}
+
+/* 名前：勤怠詳細と同じ「箱の開始位置」に寄せる */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--name {
+    text-align: left;
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 日付：tdはtable-cellのまま。中の2つspanを左右に */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--date {
+    text-align: center;
+    padding-left: calc((100% - var(--detail-w)) / 2);
+    padding-right: calc((100% - var(--detail-w)) / 2);
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+/* 日付2要素を左右寄せ */
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--date .admin-detail__date-item {
+    display: inline-block;
+    width: 50%;
+    white-space: nowrap;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--date .admin-detail__date-item--left {
+    text-align: left;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--date .admin-detail__date-item--right {
+    text-align: right;
+}
+
+/* 申請詳細の旧仕様（admin-detail__name / date-row）を無効化して混線防止 */
+.admin-card.admin-detail table.admin-detail__table--request .admin-detail__name {
+    width: auto;
+    margin: 0;
+}
+
+.admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td.admin-detail__date-row {
+    display: table-cell;
+    /* 念のため */
+}
+
+
+/* =========================
    スタッフ一覧ページ
    ========================= */
 .staff-page {
-    /* 画面上下に少し余白をつけて中央寄せっぽく */
     padding: 60px 0 80px;
     background-color: #f5f5f7;
-    /* 他の管理画面と同じ薄グレーを想定 */
 }
 
-/* カードの幅・位置を調整（中央寄せ） */
 .staff-card {
     max-width: 960px;
-    /* 画像に近い横幅 */
     margin: 0 auto;
-    /* 中央寄せ */
     padding: 40px 40px 48px;
     background-color: #ffffff;
     border-radius: 0;
-    /* 角は丸めないデザインっぽかったので 0 */
     box-shadow: 0 0 0 1px #e6e6e6;
 }
 
-/* 見出し周り（既存 admin-heading を軽く調整する用） */
 .staff-card .admin-heading {
     margin-bottom: 32px;
 }
@@ -471,7 +692,6 @@ body {
     font-weight: 700;
 }
 
-/* テーブル全体 */
 .staff-table {
     width: 100%;
     border-collapse: collapse;
@@ -484,7 +704,6 @@ body {
     background-color: #f5f5f7;
 }
 
-/* ヘッダセル */
 .staff-table th {
     padding: 14px 16px;
     text-align: left;
@@ -492,7 +711,6 @@ body {
     font-weight: 700;
 }
 
-/* 各列幅（画像イメージに近づける） */
 .staff-table__col-name {
     width: 26%;
 }
@@ -506,14 +724,12 @@ body {
     text-align: center;
 }
 
-/* ボディセル */
 .staff-table td {
     padding: 13px 16px;
     border-bottom: 1px solid #f0f0f0;
     background-color: #ffffff;
 }
 
-/* 名前・メールは左寄せのまま */
 .staff-table__cell-name {
     font-weight: 500;
 }
@@ -522,7 +738,6 @@ body {
     word-break: break-all;
 }
 
-/* 「詳細」リンクを右寄せ＆青色に */
 .staff-table__cell-month {
     text-align: center;
 }
@@ -537,60 +752,9 @@ body {
     text-decoration: underline;
 }
 
-/* ▼ スタッフ一覧ページ全体を中央寄せ */
-.admin-staff-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-/* ▼ 内側のカード */
-.admin-staff-card {
-    width: 70%;
-    max-width: 1100px;
-    background: #ffffff;
-    padding: 40px 60px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* タイトル */
-.admin-staff-title {
-    font-size: 28px;
-    margin-bottom: 30px;
-    font-weight: bold;
-}
-
-/* ▼ テーブルを中央寄せ */
-.admin-staff-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    /* ★ すべての列を中央寄せ */
-}
-
-.admin-staff-table th,
-.admin-staff-table td {
-    padding: 14px 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: center !important;
-    /* ★ 強制中央寄せ */
-}
-
-.admin-staff-table th {
-    background: #f5f5f5;
-    font-weight: bold;
-}
-
-.admin-staff-detail a {
-    color: #0a58ca;
-}
-
 /* =========================
    スタッフ月別勤怠（管理者）
    ========================= */
-
 .staff-month-main {
     background-color: #f4f4f7;
     padding: 40px 0 80px;
@@ -598,21 +762,17 @@ body {
 
 .staff-month-card {
     max-width: 760px;
-    /* 画像くらいの横幅 */
     margin: 0 auto;
     background-color: #f8f8fb;
-    /* 外側パネル */
     border-radius: 8px;
     padding: 32px 56px 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* 見出し位置を少し内側に */
 .staff-month-heading {
     margin-bottom: 24px;
 }
 
-/* 月ナビゲーション */
 .staff-month-nav {
     display: flex;
     align-items: center;
@@ -654,7 +814,6 @@ body {
     font-size: 16px;
 }
 
-/* テーブル */
 .staff-month-table-wrap {
     background-color: #fff;
     border-radius: 8px;
@@ -690,7 +849,6 @@ body {
     border-bottom: none;
 }
 
-/* 詳細リンク */
 .staff-month-detail-link {
     font-size: 13px;
     color: #0077ff;
@@ -701,7 +859,6 @@ body {
     text-decoration: underline;
 }
 
-/* CSVボタン */
 .staff-month-export {
     margin-top: 24px;
     text-align: center;
@@ -716,224 +873,22 @@ body {
     color: #fff;
     font-size: 13px;
     cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
 }
 
 .staff-month-export__button:hover {
     opacity: 0.8;
 }
 
-/* ==========
-  スタッフ一覧：テーブルを中央に集めて見本寄せ（上書き用）
-  app.css の一番下に置く
-========== */
-
-.admin-card.admin-staff-card2 {
-    padding-top: 72px;
-    /* 見本みたいに上の余白を増やす */
-    padding-bottom: 72px;
-}
-
-/* テーブル自体を「細くして中央寄せ」するラッパ */
-.admin-staff-table-wrap2 {
-    width: 100%;
-    max-width: 820px;
-    /* ← ここで“中央に集まる” */
-    margin: 0 auto;
-    /* ← 中央寄せ */
-    background: #fff;
-    border-radius: 8px;
-    /* 見本の角丸 */
-    overflow: hidden;
-    /* 角丸をテーブルに効かせる */
-    box-shadow: 0 0 0 1px #e6e6e6;
-}
-
-/* テーブル本体 */
-.admin-staff-table2 {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 14px;
-}
-
-/* ヘッダ */
-.admin-staff-table2 thead th {
-    background: #f5f5f5;
-    font-weight: 700;
-    padding: 14px 18px;
-    border-bottom: 1px solid #e6e6e6;
-    text-align: center;
-    /* 見本は中央寄せ感が強い */
-}
-
-/* ボディ */
-.admin-staff-table2 tbody td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #eeeeee;
-    text-align: center;
-    /* 見本寄せ */
-}
-
-/* 列幅 */
-.admin-staff-table2 .col-name {
-    width: 28%;
-}
-
-.admin-staff-table2 .col-email {
-    width: 52%;
-}
-
-.admin-staff-table2 .col-link {
-    width: 20%;
-}
-
-.admin-staff-table2 .td-email {
-    word-break: break-all;
-}
-
-/* 詳細リンク */
-.admin-staff-table2 .link-detail {
-    color: #1a73e8;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.admin-staff-table2 .link-detail:hover {
-    text-decoration: underline;
-}
-
-/* =========
-   月次勤怠（管理者）テーブルの列ズレ対策
-   ========= */
-
-/* テーブルの列幅を固定してズレを防ぐ */
-.admin-table {
-    table-layout: fixed;
-}
-
-/* 「日付」列は左寄せのまま */
-.admin-table__cell-name {
-    text-align: left;
-}
-
-/* 時刻・合計・詳細は中央寄せに統一（th/td両方） */
-.admin-table__cell-time,
-.admin-table__cell-total,
-.admin-table__cell-detail {
-    text-align: center;
-}
-
-/* 念のため th 側も強制 */
-.admin-table th.admin-table__col-time,
-.admin-table th.admin-table__col-total,
-.admin-table th.admin-table__col-detail {
-    text-align: center;
-}
-
-/* td 側にも幅指定を適用 */
-.admin-table td.admin-table__cell-time {
-    width: 12%;
-}
-
-.admin-table td.admin-table__cell-total {
-    width: 10%;
-}
-
-.admin-table td.admin-table__cell-detail {
-    width: 10%;
-}
-
-.admin-table td.admin-table__cell-name {
-    width: 22%;
-}
-
-/* 1) 列幅ブレ防止（固定レイアウト） */
-.admin-table {
-    table-layout: fixed;
-}
-
-/* 2) ヘッダとボディの “同じ列” を必ず中央にする
-      ※ .admin-table th,td { text-align:left; } に勝つため詳細セレクタで上書き */
-.admin-table thead th.admin-table__col-time,
-.admin-table thead th.admin-table__col-total,
-.admin-table thead th.admin-table__col-detail {
-    text-align: center;
-}
-
-.admin-table tbody td.admin-table__cell-time,
-.admin-table tbody td.admin-table__cell-total,
-.admin-table tbody td.admin-table__cell-detail {
-    text-align: center;
-}
-
-/* 3) 日付列は左寄せ維持（念のため） */
-.admin-table tbody td.admin-table__cell-name {
-    text-align: left;
-}
-
-/* 4) th と td で列幅を一致させる */
-.admin-table thead th.admin-table__col-name,
-.admin-table tbody td.admin-table__cell-name {
-    width: 22%;
-}
-
-.admin-table thead th.admin-table__col-time,
-.admin-table tbody td.admin-table__cell-time {
-    width: 12%;
-}
-
-.admin-table thead th.admin-table__col-total,
-.admin-table tbody td.admin-table__cell-total {
-    width: 10%;
-}
-
-.admin-table thead th.admin-table__col-detail,
-.admin-table tbody td.admin-table__cell-detail {
-    width: 10%;
-}
-
 /* =========================
    申請一覧（管理者）
    ========================= */
-
-/* タブ */
-.request-tabs {
-    display: flex;
-    gap: 40px;
-    margin: 24px 0 32px;
-    padding-left: 4px;
-    border-bottom: 1px solid #333;
-}
-
-.request-tab {
-    padding-bottom: 12px;
-    font-size: 14px;
-    text-decoration: none;
-    color: #555;
-}
-
-.request-tab.is-active {
-    color: #000;
-    font-weight: 700;
-    border-bottom: 2px solid #000;
-}
-
-/* テーブルを中央に集める */
-.request-table-wrap {
-    max-width: 760px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* タブコンテナ */
 .request-tabs-container {
     max-width: 820px;
     margin: 0 auto 18px;
 }
 
-/* タブリスト */
 .request-tabs {
     display: flex;
     gap: 48px;
@@ -941,7 +896,6 @@ body {
     padding: 0 6px;
 }
 
-/* タブリンク */
 .request-tab {
     text-decoration: none;
     color: #000;
@@ -954,289 +908,55 @@ body {
     border-bottom: 2px solid #000;
 }
 
-/* タブ下の線 */
 .request-tabs-divider {
     height: 1px;
     background: #000;
     opacity: 0.2;
 }
 
-/* 管理者タブ */
+.request-table-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* =========================
+   申請一覧（一般/管理者）タブ（admin-tabs 用）
+   ※ request-tabs と同じ見た目に寄せる
+   ========================= */
+
+/* タブの横幅を絞って中央寄せ + 下に仕切り線 */
 .admin-tabs {
+    max-width: 820px;
+    margin: 0 auto 18px;
     display: flex;
-    gap: 40px;
-    margin-bottom: 24px;
-}
-
-.admin-tab-link {
-    /* デフォルトスタイル */
-}
-
-.admin-tab-link.is-active {
-    font-weight: bold;
-}
-
-/* 見出し右にバッジを置く */
-.admin-heading--between {
-    justify-content: space-between;
-}
-
-.admin-heading__left {
-    display: flex;
-    align-items: center;
-}
-
-/* 反映済みバッジ */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid #000;
-    background: #fff;
-    color: #000;
-}
-
-.status-badge--approved {
-    border-color: #111;
-}
-
-
-
-/* 申請詳細：見出し右上にバッジ */
-.admin-heading--with-badge {
-    justify-content: space-between;
-}
-
-.admin-heading__left {
-    display: flex;
-    align-items: center;
-}
-
-.badge--pending {
-    background-color: #d9d9d9;
-    color: #555;
-}
-
-.badge--approved {
-    background-color: #d9d9d9;
-    color: #555;
-}
-
-/* 入力を画像っぽく小さめに */
-.admin-detail__input-time {
-    width: 92px;
-    padding: 6px 8px;
-}
-
-/* 備考を画像みたいに“細め中央”に */
-.admin-detail__textarea--narrow {
-    max-width: 360px;
-    margin: 0 auto;
-    display: block;
-}
-
-/* ヘッダを左右に分ける（タイトル左・バッジ右） */
-.admin-heading--between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.admin-heading__left {
-    display: flex;
-    align-items: center;
-}
-
-/* 承認済みバッジ（勤怠詳細と同じ） */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
-    height: 34px;
-    padding: 0 18px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 1px solid #777;
-    background: #fff;
-    color: #000;
+    align-items: flex-end;
+    gap: 120px;
+    /* ← ここで「近すぎ」を解消（好みで 80〜140 調整） */
+    padding: 0 6px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
-.status-badge--approved {
-    border-color: #777;
-}
-
-/* 承認待ち注意文（右寄せ） */
-.admin-detail__notice {
-    color: #ff4d4f;
-    text-align: right;
-    margin: 12px 0;
-}
-
-/* テキストの時間を「入力っぽい箱」に見せる（画像1の雰囲気） */
-.admin-detail__time-text {
-    text-align: center;
-    white-space: nowrap;
-}
-
-.admin-detail__time-box {
-    display: inline-block;
-    min-width: 84px;
-    padding: 10px 14px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: #fff;
-    font-weight: 600;
-}
-
-/* 承認ボタンを右下寄せ（画像1） */
-.admin-detail__actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-}
-
-/* 既存の .admin-detail__submit が大きすぎるなら上書き */
-.admin-detail__submit {
-    width: 140px;
-    height: 48px;
-    border-radius: 6px;
-}
-
-.admin-detail__table-wrap--narrow {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.form-error-item {
-    color: #ff4d4f;
-    font-size: 14px;
-    margin-top: 6px;
-    line-height: 1.4;
-}
-
-.admin-detail__td .form-error-item {
-    display: block;
-}
-
-.staff-month-export__button {
-    display: inline-block;
+/* タブ文字 */
+.admin-tab-link {
     text-decoration: none;
-    
+    color: #000;
+    font-weight: 700;
+    padding: 10px 6px;
+    border-bottom: 2px solid transparent;
+    /* アクティブ時の下線用 */
 }
 
-/* 勤怠詳細：見本（Figma）寄せ 上書き */
-
-/* テーブル全体を見本の幅(900px)に寄せて中央へ */
-.admin-detail__table-wrap--narrow {
-    max-width: 900px;
-    margin: 0 auto;
+/* アクティブ */
+.admin-tab-link.is-active {
+    border-bottom-color: #000;
 }
 
-/* ラベル列を広くして見本のバランスに寄せる */
-.admin-detail__table--wide-label .admin-detail__th {
-    width: 260px;
-    /* ←好みで 240〜300 で微調整OK */
-}
-
-/* 右カラムは中央寄せを維持（備考のときだけ別制御） */
-.admin-detail__table--wide-label .admin-detail__td {
-    text-align: center;
-}
-
-/* time入力を見本っぽく小さく */
-.admin-detail__input-time {
-    width: 92px;
-    height: 34px;
-    padding: 6px 10px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-/* time の時計アイコンを消したい場合（ブラウザ差あり） */
-.admin-detail__input-time::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    display: none;
-}
-
-.admin-detail__input-time {
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-/* 備考：見本みたいに“細め・中央寄せ”にする */
-.admin-detail__textarea--narrow {
-    width: 344px;
-    /* 見本の 344×100 に寄せる */
-    min-height: 100px;
-    max-width: 100%;
-    display: block;
-    margin: 0 auto;
-    /* 中央寄せ */
-    resize: none;
-    /* 見本寄せなら none 推奨（好みで vertical でもOK） */
-}
-
-/* 備考セル内は中央配置を強める（見本は中央に寄ってる） */
-.admin-detail__td:has(.admin-detail__textarea--narrow) {
-    text-align: center;
-}
-
-/* 「〜」の間隔を見本っぽく */
-.admin-detail__time-range {
-    gap: 28px;
-}
-
-/* ボタン位置：右下寄せ & 見本っぽく少し余白 */
-.admin-detail__actions {
-    margin-top: 40px;
-    justify-content: flex-end;
-}
-
-.admin-detail__submit {
-    width: 140px;
-    height: 48px;
-    border-radius: 6px;
-}
-
-/* 勤怠詳細：Figma寄せ（上書き用） */
-.admin-detail__table-wrap--narrow {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.admin-detail__table--wide-label .admin-detail__th {
-    width: 260px;
-}
-
-/* 備考：細め中央寄せ */
-.admin-detail__textarea--narrow {
-    width: 344px;
-    min-height: 100px;
-    max-width: 100%;
-    display: block;
-    margin: 0 auto;
-    resize: none;
-}
-
-/* time入力：小さめ */
-.admin-detail__input-time {
-    width: 92px;
-    height: 34px;
-    padding: 6px 10px;
-    text-align: center;
-}
-
-/* 時計アイコンを消したいなら（Chrome系） */
-.admin-detail__input-time::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    display: none;
-}
-
-.admin-detail__input-time {
-    appearance: none;
-    -webkit-appearance: none;
+/* ホバー（任意） */
+.admin-tab-link:hover {
+    opacity: 0.8;
 }

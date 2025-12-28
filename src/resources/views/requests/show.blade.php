@@ -1,4 +1,3 @@
-{{-- resources/views/requests/show.blade.php --}}
 @extends('layouts.app')
 
 @section('title', '申請詳細')
@@ -38,56 +37,60 @@
 <main class="admin-main">
     <div class="admin-card admin-detail">
 
-        {{-- ✅ 勤怠詳細と同じヘッダー構造 --}}
         <div class="admin-heading admin-heading--between">
             <div class="admin-heading__left">
                 <span class="admin-heading__bar"></span>
                 <h1 class="admin-heading__title">勤怠詳細</h1>
             </div>
 
-            {{-- ✅ 承認済みなら右上バッジ（勤怠詳細と同じ見た目） --}}
             @if($isApproved)
                 <span class="status-badge status-badge--approved">承認済み</span>
             @endif
         </div>
 
-        {{-- ✅ 承認待ちメッセージ（勤怠詳細の赤文と同じ位置・雰囲気に） --}}
         @if($isPending)
             <p class="admin-detail__notice">
                 ※ 承認待ちのため修正はできません。
             </p>
         @endif
 
-        {{-- ✅ テーブルも勤怠詳細と同じクラス --}}
         <div class="admin-detail__table-wrap">
-            <table class="admin-detail__table">
+            <table class="admin-detail__table admin-detail__table--request">
                 <tbody>
                     <tr>
                         <th class="admin-detail__th">名前</th>
-                        <td class="admin-detail__td">{{ $userName }}</td>
+                        {{-- ★ 勤怠詳細と同じ寄せ方にする --}}
+                        <td class="admin-detail__td admin-detail__td--name">
+                            {{ $userName }}
+                        </td>
                     </tr>
 
                     <tr>
                         <th class="admin-detail__th">日付</th>
-                        <td class="admin-detail__td admin-detail__date-row">
+                        {{-- ★ 勤怠詳細と同じ寄せ方にする --}}
+                        <td class="admin-detail__td admin-detail__td--date">
                             @if($workDate)
-                                <span>{{ $workDate->format('Y年') }}</span>
-                                <span>{{ $workDate->format('n月j日') }}</span>
+                                <span class="admin-detail__date-item admin-detail__date-item--left">{{ $workDate->format('Y年') }}</span>
+                                <span class="admin-detail__date-item admin-detail__date-item--right">{{ $workDate->format('n月j日') }}</span>
                             @else
                                 <span>-</span>
                             @endif
                         </td>
                     </tr>
 
+                    {{-- ✅ 出勤・退勤（td丸ごと置き換え版） --}}
                     <tr>
                         <th class="admin-detail__th">出勤・退勤</th>
-                        <td class="admin-detail__td admin-detail__time-range">
-                            <input class="admin-detail__input-time" type="time" value="{{ $clockInValue }}" disabled>
-                            <span class="admin-detail__tilde">〜</span>
-                            <input class="admin-detail__input-time" type="time" value="{{ $clockOutValue }}" disabled>
+                        <td class="admin-detail__td">
+                            <div class="admin-detail__time-range">
+                                <input class="admin-detail__input-time" type="time" value="{{ $clockInValue }}" disabled>
+                                <span class="admin-detail__tilde">〜</span>
+                                <input class="admin-detail__input-time" type="time" value="{{ $clockOutValue }}" disabled>
+                            </div>
                         </td>
                     </tr>
 
+                    {{-- ✅ 休憩（td丸ごと置き換え版） --}}
                     @for ($i = 1; $i <= $breakRowCount; $i++)
                         @php
                             $br = $displayBreaks[$i - 1] ?? null;
@@ -103,10 +106,12 @@
 
                         <tr>
                             <th class="admin-detail__th">休憩{{ $i }}</th>
-                            <td class="admin-detail__td admin-detail__time-range">
-                                <input class="admin-detail__input-time" type="time" value="{{ $start }}" disabled>
-                                <span class="admin-detail__tilde">〜</span>
-                                <input class="admin-detail__input-time" type="time" value="{{ $end }}" disabled>
+                            <td class="admin-detail__td">
+                                <div class="admin-detail__time-range">
+                                    <input class="admin-detail__input-time" type="time" value="{{ $start }}" disabled>
+                                    <span class="admin-detail__tilde">〜</span>
+                                    <input class="admin-detail__input-time" type="time" value="{{ $end }}" disabled>
+                                </div>
                             </td>
                         </tr>
                     @endfor
@@ -121,7 +126,6 @@
             </table>
         </div>
 
-        {{-- ✅ 戻る（右下寄せ） --}}
         <div class="admin-detail__actions">
             <a href="{{ route('requests.index') }}" class="admin-table__detail-link">← 戻る</a>
         </div>
