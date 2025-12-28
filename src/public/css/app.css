@@ -1127,3 +1127,116 @@ body {
     text-decoration: none;
     
 }
+
+/* 勤怠詳細：見本（Figma）寄せ 上書き */
+
+/* テーブル全体を見本の幅(900px)に寄せて中央へ */
+.admin-detail__table-wrap--narrow {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ラベル列を広くして見本のバランスに寄せる */
+.admin-detail__table--wide-label .admin-detail__th {
+    width: 260px;
+    /* ←好みで 240〜300 で微調整OK */
+}
+
+/* 右カラムは中央寄せを維持（備考のときだけ別制御） */
+.admin-detail__table--wide-label .admin-detail__td {
+    text-align: center;
+}
+
+/* time入力を見本っぽく小さく */
+.admin-detail__input-time {
+    width: 92px;
+    height: 34px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* time の時計アイコンを消したい場合（ブラウザ差あり） */
+.admin-detail__input-time::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}
+
+.admin-detail__input-time {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* 備考：見本みたいに“細め・中央寄せ”にする */
+.admin-detail__textarea--narrow {
+    width: 344px;
+    /* 見本の 344×100 に寄せる */
+    min-height: 100px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    /* 中央寄せ */
+    resize: none;
+    /* 見本寄せなら none 推奨（好みで vertical でもOK） */
+}
+
+/* 備考セル内は中央配置を強める（見本は中央に寄ってる） */
+.admin-detail__td:has(.admin-detail__textarea--narrow) {
+    text-align: center;
+}
+
+/* 「〜」の間隔を見本っぽく */
+.admin-detail__time-range {
+    gap: 28px;
+}
+
+/* ボタン位置：右下寄せ & 見本っぽく少し余白 */
+.admin-detail__actions {
+    margin-top: 40px;
+    justify-content: flex-end;
+}
+
+.admin-detail__submit {
+    width: 140px;
+    height: 48px;
+    border-radius: 6px;
+}
+
+/* 勤怠詳細：Figma寄せ（上書き用） */
+.admin-detail__table-wrap--narrow {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.admin-detail__table--wide-label .admin-detail__th {
+    width: 260px;
+}
+
+/* 備考：細め中央寄せ */
+.admin-detail__textarea--narrow {
+    width: 344px;
+    min-height: 100px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    resize: none;
+}
+
+/* time入力：小さめ */
+.admin-detail__input-time {
+    width: 92px;
+    height: 34px;
+    padding: 6px 10px;
+    text-align: center;
+}
+
+/* 時計アイコンを消したいなら（Chrome系） */
+.admin-detail__input-time::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    display: none;
+}
+
+.admin-detail__input-time {
+    appearance: none;
+    -webkit-appearance: none;
+}

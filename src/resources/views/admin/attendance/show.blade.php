@@ -7,7 +7,6 @@
 @php
     use Carbon\Carbon;
 
-    // 出勤・退勤（バリデーションエラー時は old() を優先）
     $clockInValue = old('clock_in_at');
     if ($clockInValue === null) {
         $clockInValue = $clockIn ? $clockIn->format('H:i') : '';
@@ -22,7 +21,6 @@
 <main class="admin-main">
     <div class="admin-card admin-detail">
 
-        {{-- 見出し --}}
         <div class="admin-heading">
             <span class="admin-heading__bar"></span>
             <h1 class="admin-heading__title">勤怠詳細</h1>
@@ -32,10 +30,11 @@
             @csrf
             @method('PUT')
 
-            <div class="admin-detail__table-wrap">
-                <table class="admin-detail__table">
+            {{-- ★ここ：wrapを細く＆中央寄せ --}}
+            <div class="admin-detail__table-wrap admin-detail__table-wrap--narrow">
+                {{-- ★ここ：ラベル列を広げる --}}
+                <table class="admin-detail__table admin-detail__table--wide-label">
                     <tbody>
-                        {{-- 名前 --}}
                         <tr>
                             <th class="admin-detail__th">名前</th>
                             <td class="admin-detail__td">
@@ -43,7 +42,6 @@
                             </td>
                         </tr>
 
-                        {{-- 日付 --}}
                         <tr>
                             <th class="admin-detail__th">日付</th>
                             <td class="admin-detail__td admin-detail__date-row">
@@ -52,42 +50,26 @@
                             </td>
                         </tr>
 
-                        {{-- 出勤・退勤 --}}
                         <tr>
                             <th class="admin-detail__th">出勤・退勤</th>
                             <td class="admin-detail__td admin-detail__time-range">
-                                <input
-                                    type="time"
-                                    name="clock_in_at"
-                                    class="admin-detail__input-time"
-                                    value="{{ $clockInValue }}"
-                                >
-
+                                <input type="time" name="clock_in_at" class="admin-detail__input-time" value="{{ $clockInValue }}">
                                 <span class="admin-detail__tilde">〜</span>
-
-                                <input
-                                    type="time"
-                                    name="clock_out_at"
-                                    class="admin-detail__input-time"
-                                    value="{{ $clockOutValue }}"
-                                >
+                                <input type="time" name="clock_out_at" class="admin-detail__input-time" value="{{ $clockOutValue }}">
 
                                 @error('clock_in_at')
-      <p class="form-error-item">{{ $message }}</p>
-    @enderror
-    @error('clock_out_at')
-      <p class="form-error-item">{{ $message }}</p>
-    @enderror
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
+                                @error('clock_out_at')
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
 
-                        {{-- 休憩（一般ユーザーが押した回数ぶん＋最低1行、上限なし） --}}
                         @for ($i = 1; $i <= $breakRowCount; $i++)
                             @php
-                                /** @var \App\Models\AttendanceBreak|null $break */
                                 $break = $breaks[$i - 1] ?? null;
 
-                                // DB からの初期値
                                 $defaultStart = '';
                                 $defaultEnd   = '';
 
@@ -98,7 +80,6 @@
                                     $defaultEnd = Carbon::parse($break->end_at)->format('H:i');
                                 }
 
-                                // old() があればそちら優先
                                 $startValue = old('breaks.'.$i.'.start', $defaultStart);
                                 $endValue   = old('breaks.'.$i.'.end',   $defaultEnd);
                             @endphp
@@ -106,56 +87,39 @@
                             <tr>
                                 <th class="admin-detail__th">休憩{{ $i }}</th>
                                 <td class="admin-detail__td admin-detail__time-range">
-                                    <input
-                                        type="time"
-                                        name="breaks[{{ $i }}][start]"
-                                        class="admin-detail__input-time"
-                                        value="{{ $startValue }}"
-                                    >
-
+                                    <input type="time" name="breaks[{{ $i }}][start]" class="admin-detail__input-time" value="{{ $startValue }}">
                                     <span class="admin-detail__tilde">〜</span>
-
-                                    <input
-                                        type="time"
-                                        name="breaks[{{ $i }}][end]"
-                                        class="admin-detail__input-time"
-                                        value="{{ $endValue }}"
-                                    >
+                                    <input type="time" name="breaks[{{ $i }}][end]" class="admin-detail__input-time" value="{{ $endValue }}">
 
                                     @error("breaks.$i.start")
-      <p class="form-error-item">{{ $message }}</p>
-    @enderror
-    @error("breaks.$i.end")
-      <p class="form-error-item">{{ $message }}</p>
-    @enderror
+                                        <p class="form-error-item">{{ $message }}</p>
+                                    @enderror
+                                    @error("breaks.$i.end")
+                                        <p class="form-error-item">{{ $message }}</p>
+                                    @enderror
                                 </td>
                             </tr>
                         @endfor
 
-                        {{-- 備考 --}}
                         <tr>
                             <th class="admin-detail__th">備考</th>
                             <td class="admin-detail__td">
-                                <textarea
-                                    name="remarks"
-                                    class="admin-detail__textarea"
-                                    rows="3"
-                                >{{ old('remarks', $attendance->remarks) }}</textarea>
+                                {{-- ★ここ：備考を細め中央寄せ --}}
+                                <textarea name="remarks"
+                                    class="admin-detail__textarea admin-detail__textarea--narrow"
+                                    rows="3">{{ old('remarks', $attendance->remarks) }}</textarea>
 
                                 @error('remarks')
-      <p class="form-error-item">{{ $message }}</p>
-    @enderror
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            {{-- ボタン --}}
             <div class="admin-detail__actions">
-                <button type="submit" class="admin-detail__submit">
-                    修正
-                </button>
+                <button type="submit" class="admin-detail__submit">修正</button>
             </div>
         </form>
     </div>

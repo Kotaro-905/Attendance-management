@@ -13,15 +13,15 @@
     <div class="admin-card admin-detail">
 
        <div class="admin-heading admin-heading--between">
-    <div class="admin-heading__left">
-        <span class="admin-heading__bar"></span>
-        <h1 class="admin-heading__title">勤怠詳細</h1>
-    </div>
+            <div class="admin-heading__left">
+                <span class="admin-heading__bar"></span>
+                <h1 class="admin-heading__title">勤怠詳細</h1>
+            </div>
 
-    @if($isApproved)
-        <span class="status-badge status-badge--approved">承認済み</span>
-    @endif
-</div>
+            @if($isApproved)
+                <span class="status-badge status-badge--approved">承認済み</span>
+            @endif
+        </div>
 
         @if($isPending)
             <p style="color:#ff4d4f; text-align:right; margin: 12px 0;">
@@ -33,8 +33,10 @@
             @csrf
             <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
-            <div class="admin-detail__table-wrap">
-                <table class="admin-detail__table">
+            {{-- ★ここ：wrapを細く＆中央寄せ --}}
+            <div class="admin-detail__table-wrap admin-detail__table-wrap--narrow">
+                {{-- ★ここ：ラベル列を広げる --}}
+                <table class="admin-detail__table admin-detail__table--wide-label">
                     <tbody>
                         <tr>
                             <th class="admin-detail__th">名前</th>
@@ -58,13 +60,13 @@
                                 <input class="admin-detail__input-time" type="time" name="clock_out_at"
                                     value="{{ old('clock_out_at', $clockOutValue) }}" {{ $disabled }}>
 
-                                    {{-- エラー（FN029-1/3 をここで拾う想定） --}}
-        @error('clock_in_at')
-            <p class="form-error-item">{{ $message }}</p>
-        @enderror
-        @error('clock_out_at')
-            <p class="form-error-item">{{ $message }}</p>
-        @enderror
+                                {{-- エラー --}}
+                                @error('clock_in_at')
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
+                                @error('clock_out_at')
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
 
@@ -87,12 +89,12 @@
                                         value="{{ old("breaks.$i.end", $end ? Carbon::parse($end)->format('H:i') : '') }}"
                                         {{ $disabled }}>
 
-                                        @error("breaks.$i.start")
-    <p class="form-error-item">{{ $message }}</p>
-@enderror
-@error("breaks.$i.end")
-    <p class="form-error-item">{{ $message }}</p>
-@enderror
+                                    @error("breaks.$i.start")
+                                        <p class="form-error-item">{{ $message }}</p>
+                                    @enderror
+                                    @error("breaks.$i.end")
+                                        <p class="form-error-item">{{ $message }}</p>
+                                    @enderror
                                 </td>
                             </tr>
                         @endfor
@@ -100,12 +102,13 @@
                         <tr>
                             <th class="admin-detail__th">備考</th>
                             <td class="admin-detail__td">
-                                <textarea class="admin-detail__textarea" name="reason" rows="3" {{ $disabled }}>{{ old('reason', $displayReason) }}</textarea>
+                                {{-- ★ここ：備考を細め中央寄せ --}}
+                                <textarea class="admin-detail__textarea admin-detail__textarea--narrow"
+                                    name="reason" rows="3" {{ $disabled }}>{{ old('reason', $displayReason) }}</textarea>
 
                                 @error('reason')
-    <p class="form-error-item">{{ $message }}</p>
-@enderror
-
+                                    <p class="form-error-item">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
                     </tbody>
