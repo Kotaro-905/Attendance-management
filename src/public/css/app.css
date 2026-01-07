@@ -667,22 +667,30 @@ body {
 
 
 /* =========================
-   スタッフ一覧ページ
+   スタッフ一覧ページ（丸ごと置き換え：見本寄せ）
    ========================= */
 .staff-page {
-    padding: 60px 0 80px;
-    background-color: #f5f5f7;
+    min-height: calc(100vh - 56px);
+    background-color: #222;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 40px 16px;
+    box-sizing: border-box;
 }
 
 .staff-card {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 40px 40px 48px;
-    background-color: #ffffff;
-    border-radius: 0;
-    box-shadow: 0 0 0 1px #e6e6e6;
+    width: 100%;
+    max-width: 1080px;
+    background-color: #f3f3f5;
+
+    padding: 48px 40px 56px;
+    box-sizing: border-box;
 }
 
+/* 見出し */
 .staff-card .admin-heading {
     margin-bottom: 32px;
 }
@@ -692,64 +700,88 @@ body {
     font-weight: 700;
 }
 
+/* テーブルを「中央の白い箱」にする */
 .staff-table {
     width: 100%;
+    max-width: 900px;
+    /* 見本みたいに中だけ少し絞る */
+    margin: 0 auto;
+
     border-collapse: collapse;
-    font-size: 14px;
     table-layout: fixed;
-    background-color: #ffffff;
+    font-size: 14px;
+
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
+/* ヘッダー */
 .staff-table thead {
     background-color: #f5f5f7;
 }
 
 .staff-table th {
     padding: 14px 16px;
-    text-align: left;
     border-bottom: 1px solid #e6e6e6;
     font-weight: 700;
+    color: #666;
+    text-align: center;
+    /* ★見本は中央 */
 }
 
+/* ボディ */
+.staff-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+    /* ★値も中央に揃える（ズレ解消） */
+    vertical-align: middle;
+}
+
+/* 列幅 */
 .staff-table__col-name {
-    width: 26%;
+    width: 28%;
 }
 
 .staff-table__col-email {
-    width: 54%;
+    width: 52%;
 }
 
 .staff-table__col-month {
     width: 20%;
-    text-align: center;
 }
 
-.staff-table td {
-    padding: 13px 16px;
-    border-bottom: 1px solid #f0f0f0;
-    background-color: #ffffff;
-}
-
+/* セル */
 .staff-table__cell-name {
     font-weight: 500;
 }
 
 .staff-table__cell-email {
+    color: #666;
     word-break: break-all;
+    /* 長いメールがあっても崩れない */
 }
 
 .staff-table__cell-month {
-    text-align: center;
+    font-weight: 700;
 }
 
+/* 詳細リンク（見本は黒寄り・太め） */
 .staff-table__detail-link {
-    font-size: 13px;
-    color: #1a73e8;
+    font-size: 14px;
+    color: #000;
     text-decoration: none;
+    font-weight: 700;
 }
 
 .staff-table__detail-link:hover {
     text-decoration: underline;
+}
+
+/* 最終行の下線だけ消す */
+.staff-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* =========================
@@ -959,4 +991,69 @@ body {
 /* ホバー（任意） */
 .admin-tab-link:hover {
     opacity: 0.8;
+}
+
+/* メール認証画面 */
+.verify-page {
+    min-height: calc(100vh - 56px);
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
+    box-sizing: border-box;
+}
+
+.verify-box {
+    text-align: center;
+    max-width: 720px;
+    width: 100%;
+}
+
+.verify-message {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.8;
+    margin: 0 0 28px;
+}
+
+.verify-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 320px;
+    height: 72px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #d9d9d9;
+    color: #000;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 auto 26px;
+}
+
+.verify-resend {
+    margin-top: 10px;
+    background: transparent;
+    border: none;
+    color: #1a73e8;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.verify-resend:hover {
+    text-decoration: underline;
+}
+
+.verify-status {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* /email/verify?prompt=1 のときだけ赤文字にする */
+.verify-page.is-prompt .verify-message {
+    color: #d60000;
 }

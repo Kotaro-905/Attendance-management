@@ -129,6 +129,8 @@ class AttendanceController extends Controller
             'clockOut'      => $clockOut,
             'breaks'        => $breaks,
             'breakRowCount' => $breakRowCount,
+            'clockInValue'  => $clockIn ? $clockIn->format('H:i') : '',
+            'clockOutValue' => $clockOut ? $clockOut->format('H:i') : '',
         ]);
     }
 

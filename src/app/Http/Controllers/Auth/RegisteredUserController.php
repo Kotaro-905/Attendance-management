@@ -25,7 +25,9 @@ class RegisteredUserController extends Controller
         ]);
 
         Auth::login($user);
-        
+
+        $user->sendEmailVerificationNotification();
+
         return redirect()->route('attendance.index');
     }
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\AdminRequestController; // 管理者の申請
 
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\StaffController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,12 +45,19 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return redirect('/email/verify?prompt=1')
+        ->with('status', 'verification-link-sent');
+})->middleware(['auth'])->name('verification.send');
+
 /*
 |--------------------------------------------------------------------------
 | 一般ユーザー 機能
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     // 出勤登録（打刻）
     Route::get('/attendance', [UserAttendanceController::class, 'index'])->name('attendance.index');
@@ -67,7 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/stamp_correction_request/list', [RequestController::class, 'index'])
         ->name('requests.index');
 
-    // 申請詳細（設計書に行が無いけど、機能として必要ならこのまま）
+    // 申請詳細
     Route::get('/stamp_correction_request/{correctionRequest}', [RequestController::class, 'show'])
         ->whereNumber('correctionRequest')
         ->name('requests.show');
@@ -76,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/stamp_correction_request', [RequestController::class, 'store'])
         ->name('requests.store');
 });
+
 
 /*
 |--------------------------------------------------------------------------

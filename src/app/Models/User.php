@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
