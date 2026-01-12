@@ -67,7 +67,18 @@ docker-compose exec php bash
 php artisan test
 ```
 
----
+
+##　ログイン情報
+
+管理者ユーザー
+
+* email: admin@example.com
+* パスワード: 12345678
+
+一般ユーザー
+
+* email: user@mail.com
+* パスワード: 12345678
 
 ## URL
 
@@ -203,4 +214,6 @@ php artisan test
 **リレーション:**
 - `correctionRequest`: 多対1（所属する修正申請）
 
----
+## 補足
+
+Figmaにメール認証画面がないためメール認証誘導画面と同一でよいとお聞きしています。
