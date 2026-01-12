@@ -67,8 +67,7 @@ docker-compose exec php bash
 php artisan test
 ```
 
-
-##　ログイン情報
+## ログイン情報
 
 管理者ユーザー
 
