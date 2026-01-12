@@ -44,7 +44,7 @@
 docker exec -it attendance-management-mysql-1 bash
 mysql -u root -p
 # パスワード: root
-CREATE DATABASE laravel_test;
+CREATE DATABASE demo_test;
 exit
 exit
 ```
