@@ -213,6 +213,9 @@ php artisan test
 **リレーション:**
 - `correctionRequest`: 多対1（所属する修正申請）
 
+## ER図
+![alt](.drawio.png)
+
 ## 補足
 
 * 鈴木北斗コーチからFigmaにメール認証画面がないためメール認証誘導画面と同一でよいとお聞きしています。
