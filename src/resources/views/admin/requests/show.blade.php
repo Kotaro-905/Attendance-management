@@ -44,11 +44,7 @@
             <div class="admin-heading__left">
                 <span class="admin-heading__bar"></span>
                 <h1 class="admin-heading__title">勤怠詳細</h1>
-            </div>
-
-            @if($isApproved)
-                <span class="status-badge status-badge--approved">承認済み</span>
-            @endif
+            </div> 
         </div>
 
         <div class="admin-detail__table-wrap admin-detail__table-wrap--narrow">
@@ -117,6 +113,10 @@
         </div>
 
         <div class="admin-detail__actions">
+            @if($isApproved)
+                <span class="status-badge status-badge--approved">承認済み</span>
+            @endif
+
             @unless($isApproved)
                 <form action="{{ route('admin.requests.approve', $request) }}" method="POST">
                     @csrf

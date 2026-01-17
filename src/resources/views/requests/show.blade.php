@@ -42,10 +42,6 @@
                 <span class="admin-heading__bar"></span>
                 <h1 class="admin-heading__title">勤怠詳細</h1>
             </div>
-
-            @if($isApproved)
-                <span class="status-badge status-badge--approved">承認済み</span>
-            @endif
         </div>
 
         @if($isPending)
@@ -127,7 +123,9 @@
         </div>
 
         <div class="admin-detail__actions">
-            <a href="{{ route('requests.index') }}" class="admin-table__detail-link">← 戻る</a>
+            @if($isApproved)
+                <span class="status-badge status-badge--approved">承認済み</span>
+            @endif
         </div>
 
     </div>

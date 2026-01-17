@@ -54,15 +54,19 @@ body {
 
 .site-header__logout-form button {
     background: transparent;
-    border: 1px solid #fff;
+    border: none;
+    /* ← 枠を消す */
     color: #fff;
-    padding: 4px 12px;
-    font-size: 12px;
+    padding: 0;
+    /* ← 余計なボタン感を消す */
+    font-size: 14px;
     cursor: pointer;
 }
 
 .site-header__logout-form button:hover {
-    background-color: #fff;
+    background: transparent;
+    text-decoration: underline;
+    /* ← 下線を出す */
 }
 
 .site-main {
@@ -80,6 +84,7 @@ body {
     align-items: flex-start;
     padding: 40px 16px;
     box-sizing: border-box;
+    background-color: #f3f3f5;
 }
 
 .attendance-card {
@@ -207,17 +212,23 @@ body {
 
 /* 承認済みバッジ */
 .status-badge {
+    width: 150px;
+    /* ← 左右均等な固定幅 */
+    height: 44px;
+    /* ← ボタンと高さを合わせる */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 34px;
-    padding: 0 18px;
-    border-radius: 999px;
-    font-size: 13px;
+
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* ← 少し透ける黒 */
+    color: #fff;
+
+    font-size: 14px;
     font-weight: 700;
-    border: 1px solid #777;
-    background: #fff;
-    color: #000;
+    cursor: default;
+    /* 押せない感じ */
 }
 
 .status-badge--approved {
@@ -333,6 +344,7 @@ body {
     margin: 40px auto 0;
     padding: 40px 56px 48px;
     box-sizing: border-box;
+    position: relative;
 
     /* Figma寄せの基準値 */
     --detail-wrap-w: 900px;
@@ -554,10 +566,21 @@ body {
 
 /* 承認待ちメッセージ */
 .admin-detail__notice {
-    color: #ff4d4f;
-    text-align: left;
-    max-width: var(--detail-wrap-w);
-    margin: 12px auto 0;
+    position: absolute;
+    right: 32px;
+        /* ← 56px から少し左へ */
+        bottom: 35px;
+        /* ← 承認ボタンの少し上 */
+    
+        color: #ff4d4f;
+        font-size: 17px;
+        /* ← 少し大きく */
+        font-weight: 600;
+    
+        margin: 0;
+        max-width: none;
+        text-align: right;
+        white-space: nowrap;
 }
 
 /* 申請詳細の td は中央基準 */
