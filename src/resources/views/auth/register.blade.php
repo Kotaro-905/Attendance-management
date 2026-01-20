@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="auth-title">会員登録</h1>
 
-<form method="POST" action="{{ route('register') }}">
+<form method="POST" action="{{ route('register') }}" novalidate>
             @csrf
 
             <div class="form-group">
@@ -37,6 +37,9 @@
                 <label for="password_confirmation" class="form-label">パスワード確認</label>
                 <input id="password_confirmation" type="password"
                        name="password_confirmation" class="form-input">
+                @error('password_confirmation')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
             </div>
 
             <button type="submit" class="auth-button">

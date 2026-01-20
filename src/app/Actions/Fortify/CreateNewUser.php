@@ -6,13 +6,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
-use App\Http\Requests\Auth\RegisterFormRequest;
+use App\Http\Requests\RegisterRequest;
 
 class CreateNewUser implements CreatesNewUsers
 {
     public function create(array $input): User
     {
-        $form = new RegisterFormRequest();
+        $form = new RegisterRequest();
 
         Validator::make($input, $form->rules(), $form->messages())->validate();
 

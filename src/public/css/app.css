@@ -84,14 +84,14 @@ body {
     align-items: flex-start;
     padding: 40px 16px;
     box-sizing: border-box;
-    background-color: #f3f3f5;
+    background-color: #e9e9eb;
 }
 
 .attendance-card {
     width: 100%;
     max-width: 1080px;
     min-height: 520px;
-    background-color: #f3f3f5;
+    background-color: #e9e9eb;
     padding: 80px 40px;
     box-sizing: border-box;
     text-align: center;
@@ -106,8 +106,8 @@ body {
     padding: 6px 18px;
     border-radius: 999px;
     font-size: 12px;
-    background-color: #e0e0e0;
-    color: #555;
+    background-color: #bfbfbf;
+    color: #5f5f5f;
 }
 
 .attendance-date {
@@ -163,7 +163,7 @@ body {
    ========================= */
 .admin-main {
     min-height: calc(100vh - 56px);
-    background-color: #f3f3f5;
+    background-color: #e9e9eb;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -174,7 +174,7 @@ body {
 .admin-card {
     width: 100%;
     max-width: 1080px;
-    background-color: #f3f3f5;
+    background-color: #e9e9eb;
     padding: 48px 40px 56px;
     box-sizing: border-box;
 }
@@ -239,14 +239,15 @@ body {
    管理者：勤怠一覧
    ========================= */
 .admin-date-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    background-color: #fff;
-    border-radius: 4px;
-    margin-bottom: 24px;
-    font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 870px;
+        margin: 0 auto 24px;
+        padding: 12px 16px;
+        background-color: #fff;
+        border-radius: 4px;
+        font-size: 14px;
 }
 
 .admin-date-nav__button {
@@ -273,11 +274,15 @@ body {
 
 .admin-table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    margin-top: 16px;
-    font-size: 13px;
-    table-layout: fixed;
+        max-width: 900px;
+        /* ← 好みで 800〜1000px */
+        margin: 16px auto 0;
+        /* ← 中央寄せ */
+    
+        border-collapse: collapse;
+        background-color: #fff;
+        font-size: 13px;
+        table-layout: auto;
 }
 
 .admin-table th,
@@ -708,7 +713,7 @@ body {
 .staff-card {
     width: 100%;
     max-width: 1080px;
-    background-color: #f3f3f5;
+    background-color: #e9e9eb;
 
     padding: 48px 40px 56px;
     box-sizing: border-box;
@@ -766,14 +771,17 @@ body {
 /* 列幅 */
 .staff-table__col-name {
     width: 28%;
+    background-color: #fff;
 }
 
 .staff-table__col-email {
     width: 52%;
+    background-color: #fff;
 }
 
 .staff-table__col-month {
     width: 20%;
+    background-color: #fff;
 }
 
 /* セル */
@@ -812,14 +820,14 @@ body {
    スタッフ月別勤怠（管理者）
    ========================= */
 .staff-month-main {
-    background-color: #f4f4f7;
+    background-color: #e9e9eb;
     padding: 40px 0 80px;
 }
 
 .staff-month-card {
     max-width: 760px;
     margin: 0 auto;
-    background-color: #f8f8fb;
+    background-color: #e9e9eb;
     border-radius: 8px;
     padding: 32px 56px 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
@@ -833,7 +841,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+
+    max-width: 900px;
+    margin: 0 auto 24px;
+
+    padding: 16px 24px;
+    /* ← 箱の余白 */
+    background-color: #fff;
+    /* ← 白い箱 */
+    border-radius: 12px;
+    /* ← 角丸 */
+    box-sizing: border-box;
+    position: relative;
 }
 
 .staff-month-nav__button {
@@ -842,8 +861,6 @@ body {
     justify-content: center;
     padding: 6px 16px;
     font-size: 13px;
-    border-radius: 999px;
-    border: 1px solid #ddd;
     background-color: #fff;
     text-decoration: none;
     color: #333;
@@ -858,12 +875,17 @@ body {
 }
 
 .staff-month-nav__current {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
+    gap: 8px;
+
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
 }
 
 .staff-month-nav__icon {
@@ -883,7 +905,7 @@ body {
 }
 
 .staff-month-table thead {
-    background-color: #f1f1f5;
+    background-color: #fff;
 }
 
 .staff-month-table th,
@@ -902,7 +924,7 @@ body {
 
 .staff-month-table tr:last-child th,
 .staff-month-table tr:last-child td {
-    border-bottom: none;
+    border-bottom: 1px solid #ececf2;
 }
 
 .staff-month-detail-link {
@@ -987,7 +1009,7 @@ body {
     max-width: 820px;
     margin: 0 auto 18px;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: flex-end;
     gap: 120px;
     /* ← ここで「近すぎ」を解消（好みで 80〜140 調整） */

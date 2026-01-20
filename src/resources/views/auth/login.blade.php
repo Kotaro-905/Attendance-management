@@ -3,14 +3,7 @@
 @section('content')
 <h1 class="auth-title">ログイン</h1>
 
-{{-- ★ 追加：全体エラー（ログイン失敗用） --}}
-@if ($errors->any())
-    <div class="form-error">
-        {{ $errors->first() }}
-    </div>
-@endif
-
-<form method="POST" action="{{ route('login') }}">
+<form method="POST" action="{{ route('login') }}" novalidate>
     @csrf
 
     <div class="form-group">
