@@ -76,8 +76,8 @@ php artisan test
 
 一般ユーザー
 
-* email: user@mail.com
-* パスワード: 12345678
+* email: staff1@example.com
+* パスワード: password
 
 ## URL
 
