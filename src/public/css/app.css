@@ -292,11 +292,10 @@ body {
 .admin-table td {
     padding: 10px 12px;
     border-bottom: 1px solid #e0e0e0;
-    text-align: left;
+    text-align: center;
 }
 
 .admin-table thead th {
-    background-color: #f5f5f5;
     font-weight: 600;
 }
 
@@ -423,6 +422,32 @@ body {
     opacity: 1;
 }
 
+/* 承認済み：時間入力の枠線を消す */
+.admin-detail--approved .admin-detail__input-time {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* 承認済み：備考textareaの枠線を消す */
+.admin-detail--approved .admin-detail__textarea {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    resize: none;
+}
+
+/* 承認申請詳細など：disabled の入力だけ枠線を消す */
+.admin-detail__input-time:disabled,
+.admin-detail__textarea:disabled {
+    border: none;
+    box-shadow: none;
+    outline: none;
+    background: transparent;
+    /* 白のままにしたいなら #fff に */
+}
+
+
 .admin-detail__input-time:disabled {
     -webkit-text-fill-color: #000;
 }
@@ -477,13 +502,13 @@ body {
 }
 
 .admin-detail__submit {
-    min-width: 140px;
+    min-width: 110px;
     padding: 10px 32px;
     border: none;
     border-radius: 4px;
     background-color: #000;
     color: #fff;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -652,8 +677,8 @@ body {
 /* 名前：勤怠詳細と同じ「箱の開始位置」に寄せる */
 .admin-card.admin-detail table.admin-detail__table--request td.admin-detail__td--name {
     text-align: left;
-    padding-left: calc((92% - var(--detail-w)) / 2);
-    padding-right: calc((100% - var(--detail-w)) / 2);
+    padding-left: calc((93% - var(--detail-w)) / 2);
+    padding-right: calc((93% - var(--detail-w)) / 2);
     box-sizing: border-box;
     font-weight: 700;
     white-space: nowrap;
