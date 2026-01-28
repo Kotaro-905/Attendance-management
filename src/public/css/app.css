@@ -55,10 +55,8 @@ body {
 .site-header__logout-form button {
     background: transparent;
     border: none;
-    /* ← 枠を消す */
     color: #fff;
-    padding: 0;
-    /* ← 余計なボタン感を消す */
+    padding: 35px 0;
     font-size: 14px;
     cursor: pointer;
 }
@@ -215,7 +213,7 @@ body {
 
 /* 承認済みバッジ */
 .status-badge {
-    width: 150px;
+    min-width: 110px;
     /* ← 左右均等な固定幅 */
     height: 44px;
     /* ← ボタンと高さを合わせる */
@@ -389,6 +387,7 @@ body {
     padding: 17px 24px;
     border-bottom: 1px solid #e0e0e0;
     font-size: 14px;
+    font-weight: 500;
     box-sizing: border-box;
 }
 
@@ -672,6 +671,7 @@ body {
     display: block;
     margin: 0 auto;
     resize: none;
+    font-weight: 1000;
 }
 
 /* 名前：勤怠詳細と同じ「箱の開始位置」に寄せる */
