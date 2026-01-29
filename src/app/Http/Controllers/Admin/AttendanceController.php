@@ -113,14 +113,22 @@ class AttendanceController extends Controller
         $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
         $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
 
+        // order順に並べる
         $breaks = $attendance->breaks
             ->sortBy('order')
             ->values();
 
-        // ▼ここが「10回まで」の原因だったので、上限を外す
-        $breakRowCount = $breaks->count();
-        $breakRowCount = max(1, $breakRowCount);
-        // $breakRowCount = min(10, $breakRowCount); // ← 削除（回数無制限）
+        /**
+         * ✅ ここが重要：
+         * 「登録済みの休憩数 + 1（空枠）」を表示する
+         * ただし最低2枠は常に出す
+         *
+         * 例：
+         * 0件 → 2枠（休憩1,2）
+         * 2件 → 3枠（休憩1,2,3空）
+         * 3件 → 4枠（休憩1,2,3,4空）
+         */
+        $breakRowCount = max(2, $breaks->count() + 1);
 
         return view('admin.attendance.show', [
             'attendance'    => $attendance,
@@ -155,26 +163,48 @@ class AttendanceController extends Controller
         $attendance->remarks = $data['remarks'] ?? null;
         $attendance->save();
 
-        // 休憩レコード作り直し
+        /**
+         * ✅ 休憩：入力されたものを保存（空行は保存しない）
+         * - 一旦消して作り直しでOK（要件的に問題なければ）
+         * - orderは「連番」で振り直す（空行が混ざってもズレない）
+         */
         $attendance->breaks()->delete();
 
+        $order = 1;
+
         if (!empty($data['breaks']) && is_array($data['breaks'])) {
-            foreach ($data['breaks'] as $index => $break) {
+            foreach ($data['breaks'] as $break) {
                 $start = $break['start'] ?? null;
                 $end   = $break['end']   ?? null;
 
-                if ($start && $end) {
+                // 両方空ならスキップ（＝空枠はDBに作らない）
+                if (empty($start) && empty($end)) {
+                    continue;
+                }
+
+                // 片方だけ入ってるケースは、バリデーションで弾く想定
+                // （もし許容するならここで追加処理が必要）
+                if (!empty($start) && !empty($end)) {
                     $attendance->breaks()->create([
-                        'order'    => (int) $index,
+                        'order'    => $order,
                         'start_at' => $start . ':00',
                         'end_at'   => $end   . ':00',
                     ]);
+                    $order++;
                 }
             }
         }
 
+        /**
+         * ✅ 更新後は「詳細に留まる」
+         * これで
+         * 1. そのまま勤怠詳細画面表示
+         * 2. 入れた値が入っている
+         * 3. show()側で「+1空枠」が出る
+         * が成立します
+         */
         return redirect()
-            ->route('admin.attendance.index', ['date' => $attendance->work_date])
+            ->route('admin.attendance.show', $attendance)
             ->with('status', '勤怠を更新しました。');
     }
 }
