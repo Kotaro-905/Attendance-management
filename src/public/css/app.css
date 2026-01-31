@@ -204,6 +204,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
 
 .admin-heading__left {
@@ -600,15 +601,10 @@ body {
 .admin-detail__notice {
     position: absolute;
     right: 32px;
-    /* ← 56px から少し左へ */
-    bottom: 35px;
-    /* ← 承認ボタンの少し上 */
-
+    bottom: 1px;
     color: #ff4d4f;
     font-size: 17px;
-    /* ← 少し大きく */
     font-weight: 600;
-
     margin: 0;
     max-width: none;
     text-align: right;

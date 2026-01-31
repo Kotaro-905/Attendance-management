@@ -13,20 +13,20 @@
 
         {{-- 月ナビ --}}
         <div class="staff-month-nav">
-            <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}"
-               class="staff-month-nav__button staff-month-nav__button--prev">
-                ← 前月
-            </a>
+            <a href="{{ request()->fullUrlWithQuery(['month' => $prevMonth]) }}"
+   class="staff-month-nav__button staff-month-nav__button--prev">
+    ← 前月
+</a>
 
             <div class="staff-month-nav__current">
                 <span class="staff-month-nav__icon">📅</span>
                 <span>{{ $monthStart->format('Y/m') }}</span>
             </div>
 
-            <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}"
-               class="staff-month-nav__button staff-month-nav__button--next">
-                翌月 →
-            </a>
+            <a href="{{ request()->fullUrlWithQuery(['month' => $nextMonth]) }}"
+   class="staff-month-nav__button staff-month-nav__button--next">
+    翌月 →
+</a>
         </div>
 
         <div class="staff-month-table-wrap">

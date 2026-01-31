@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests\Admin\AttendanceUpdateRequest;
 use Illuminate\Http\RedirectResponse;
+use App\Models\CorrectionRequest;
 
 class AttendanceController extends Controller
 {
@@ -106,42 +107,56 @@ class AttendanceController extends Controller
      * 勤怠詳細（管理者）
      */
     public function show(Attendance $attendance)
-    {
-        $attendance->load(['user', 'breaks']);
+{
+    // 勤怠と休憩は従来通り
+    $attendance->load(['user', 'breaks']);
 
-        $workDate = Carbon::parse($attendance->work_date);
-        $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
-        $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
+    $workDate = Carbon::parse($attendance->work_date);
+    $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
+    $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
 
-        // order順に並べる
-        $breaks = $attendance->breaks
-            ->sortBy('order')
-            ->values();
+    $breaks = $attendance->breaks
+        ->sortBy('order')
+        ->values();
 
-        /**
-         * ✅ ここが重要：
-         * 「登録済みの休憩数 + 1（空枠）」を表示する
-         * ただし最低2枠は常に出す
-         *
-         * 例：
-         * 0件 → 2枠（休憩1,2）
-         * 2件 → 3枠（休憩1,2,3空）
-         * 3件 → 4枠（休憩1,2,3,4空）
-         */
-        $breakRowCount = max(2, $breaks->count() + 1);
+    $breakRowCount = max(2, $breaks->count() + 1);
 
-        return view('admin.attendance.show', [
-            'attendance'    => $attendance,
-            'workDate'      => $workDate,
-            'clockIn'       => $clockIn,
-            'clockOut'      => $clockOut,
-            'breaks'        => $breaks,
-            'breakRowCount' => $breakRowCount,
-            'clockInValue'  => $clockIn ? $clockIn->format('H:i') : '',
-            'clockOutValue' => $clockOut ? $clockOut->format('H:i') : '',
-        ]);
-    }
+    /**
+     * ✅ 追加：この勤怠に紐づく申請を取得
+     * - 承認待ち(status=0)があればそれを優先
+     * - なければ最新を1件
+     */
+    $correctionRequest = CorrectionRequest::with(['breaks', 'attendance.user'])
+        ->where('attendance_id', $attendance->id)
+        ->orderBy('status')          // 0(承認待ち) → 1(承認済み)
+        ->orderByDesc('created_at')  // 同じstatusなら最新
+        ->first();
 
+    // ✅ 申請があるかどうか（blade分岐用）
+    $hasRequest = !is_null($correctionRequest);
+
+    // ✅ 申請がある場合の状態（blade分岐用）
+    $isPending  = $correctionRequest ? ((int)$correctionRequest->status === 0) : false;
+    $isApproved = $correctionRequest ? ((int)$correctionRequest->status === 1) : false;
+
+    return view('admin.attendance.show', [
+        // 既存
+        'attendance'    => $attendance,
+        'workDate'      => $workDate,
+        'clockIn'       => $clockIn,
+        'clockOut'      => $clockOut,
+        'breaks'        => $breaks,
+        'breakRowCount' => $breakRowCount,
+        'clockInValue'  => $clockIn ? $clockIn->format('H:i') : '',
+        'clockOutValue' => $clockOut ? $clockOut->format('H:i') : '',
+
+        // ✅ 追加（ここが肝）
+        'correctionRequest' => $correctionRequest,
+        'hasRequest'        => $hasRequest,
+        'isPending'         => $isPending,
+        'isApproved'        => $isApproved,
+    ]);
+}
     /**
      * 勤怠更新（管理者）
      */
@@ -165,8 +180,6 @@ class AttendanceController extends Controller
 
         /**
          * ✅ 休憩：入力されたものを保存（空行は保存しない）
-         * - 一旦消して作り直しでOK（要件的に問題なければ）
-         * - orderは「連番」で振り直す（空行が混ざってもズレない）
          */
         $attendance->breaks()->delete();
 
@@ -197,11 +210,6 @@ class AttendanceController extends Controller
 
         /**
          * ✅ 更新後は「詳細に留まる」
-         * これで
-         * 1. そのまま勤怠詳細画面表示
-         * 2. 入れた値が入っている
-         * 3. show()側で「+1空枠」が出る
-         * が成立します
          */
         return redirect()
             ->route('admin.attendance.show', $attendance)
