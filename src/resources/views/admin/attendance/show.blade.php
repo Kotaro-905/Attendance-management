@@ -33,7 +33,7 @@
 
     // 申請表示の休憩（CorrectionBreak）
     $reqBreaks = $req?->breaks ?? collect();
-    $reqBreakRowCount = max(2, $reqBreaks->count());
+    $reqBreakRowCount = max(1, $reqBreaks->count());
 
     // 申請理由
     $reqReason = $req?->reason ?? '';
@@ -52,7 +52,7 @@
     }
 
     $breakCount = is_countable($breaks) ? count($breaks) : 0;
-    $breakRowCount = max(2, $breakCount + 1);
+    $breakRowCount = $breakCount + 1;
 @endphp
 
 <main class="admin-main">
@@ -115,7 +115,7 @@
                                     ? Carbon::parse($br->requested_break_end)->format('H:i')
                                     : '';
                             @endphp
-                            <tr>
+                            <tr class="admin-detail__tr">
                                 <th class="admin-detail__th">休憩{{ $i }}</th>
                                 <td class="admin-detail__td">
                                     <div class="admin-detail__time-range">

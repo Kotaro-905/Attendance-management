@@ -28,7 +28,7 @@
 
     // 申請値（休憩）
     $displayBreaks = $correctionRequest->breaks ?? collect();
-    $breakRowCount = max(2, $displayBreaks->count());
+    $breakRowCount = $displayBreaks->count();
 
     // 備考（申請理由）
     $displayReason = $correctionRequest->reason ?? '';

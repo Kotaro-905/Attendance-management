@@ -267,8 +267,18 @@ public function list(Request $request)
 
         // 休憩行数（最低2行、+1の空行を出す）
         $oldCount = is_array(old('breaks')) ? count(old('breaks')) : 0;
-        $breakRowCount = max(2, $displayBreaks->count() + 1, $oldCount);
+        $breakRowCount = max(1, $displayBreaks->count(), $oldCount);
+    if (!$isPending) {
+      $breakRowCount++;
+    }
 
+    if ($attendance->breaks->count() === 0 ) {
+      $breakRowCount--;
+    }
+
+    if ($isApproved) {
+      $breakRowCount--;
+    }
         return view('attendance.show', compact(
             'attendance',
             'workDate',

@@ -1125,3 +1125,11 @@ body {
 .verify-page.is-prompt .verify-message {
     color: #d60000;
 }
+
+/* =========================
+   最後の休憩行の時間範囲を非表示
+   ========================= */
+/* 次の兄弟要素がadmin-detail__trでない場合（=最後のadmin-detail__tr） */
+tbody tr:nth-last-child(2).admin-detail__tr .admin-detail__td {
+    visibility: hidden;
+}

@@ -32,6 +32,9 @@
     // 休憩
     $displayBreaks = $request->breaks ?? collect();
     $breakRowCount = max(2, $displayBreaks->count());
+    if ($attendance->breaks->count() === 0) {
+      $breakRowCount--;
+    }
 
     // 備考
     $displayReason = $request->reason ?? '';
@@ -86,6 +89,8 @@
                     @for($i = 1; $i <= $breakRowCount; $i++) 
 
                     @php $br = $displayBreaks[$i-1] ?? null; $bStart = $br?->requested_break_start ? Carbon::parse($br->requested_break_start)->format('H:i') : ''; $bEnd = $br?->requested_break_end ? Carbon::parse($br->requested_break_end)->format('H:i') : ''; @endphp <tr> 
+                        
+                        <tr class="admin-detail__tr">
                         
                         <th class="admin-detail__th">休憩{{ $i }}</th> <td class="admin-detail__td"> 
                             <div class="admin-detail__time-range"> 
