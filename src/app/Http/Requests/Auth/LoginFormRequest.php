@@ -22,18 +22,18 @@ class LoginFormRequest extends FormRequest
      * @return array
      */
     public function rules(): array
-{
-    return [
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ];
-}
+    {
+        return [
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ];
+    }
 
-public function messages(): array
-{
-    return [
-        'email.required' => 'メールアドレスを入力してください',
-        'password.required' => 'パスワードを入力してください',
-    ];
-}
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'メールアドレスを入力してください',
+            'password.required' => 'パスワードを入力してください',
+        ];
+    }
 }

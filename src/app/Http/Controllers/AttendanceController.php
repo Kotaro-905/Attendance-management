@@ -39,110 +39,110 @@ class AttendanceController extends Controller
     }
 
     // ✅ 追加：勤怠一覧（月次）
-public function list(Request $request)
-{
-    $user = Auth::user();
+    public function list(Request $request)
+    {
+        $user = Auth::user();
 
-    // month を拾う（クエリ優先）
-    $monthRaw = $request->query('month');
+        // month を拾う（クエリ優先）
+        $monthRaw = $request->query('month');
 
-    // ✅ 形式ゆらぎ吸収
-    // - 2027-03
-    // - 2027/03
-    // - 2027-3
-    // - month が複数付いた時に配列になるケースも吸収
-    if (is_array($monthRaw)) {
-        $monthRaw = end($monthRaw); // 最後の値を採用
-    }
-    $monthRaw = $monthRaw ?: Carbon::today()->format('Y-m');
-    $monthRaw = trim((string)$monthRaw);
-    $monthRaw = str_replace('/', '-', $monthRaw);
-
-    // ✅ YYYY-M / YYYY-MM を許可して year と month を取り出す
-    if (preg_match('/^(\d{4})-(\d{1,2})$/', $monthRaw, $m)) {
-        $year  = (int)$m[1];
-        $month = (int)$m[2];
-
-        // 範囲外なら当月にフォールバック
-        if ($month < 1 || $month > 12) {
-            $monthStart = Carbon::today()->startOfMonth();
-        } else {
-            $monthStart = Carbon::create($year, $month, 1)->startOfMonth();
+        // ✅ 形式ゆらぎ吸収
+        // - 2027-03
+        // - 2027/03
+        // - 2027-3
+        // - month が複数付いた時に配列になるケースも吸収
+        if (is_array($monthRaw)) {
+            $monthRaw = end($monthRaw); // 最後の値を採用
         }
-    } else {
-        // 想定外は当月
-        $monthStart = Carbon::today()->startOfMonth();
-    }
+        $monthRaw = $monthRaw ?: Carbon::today()->format('Y-m');
+        $monthRaw = trim((string)$monthRaw);
+        $monthRaw = str_replace('/', '-', $monthRaw);
 
-    $monthEnd = $monthStart->copy()->endOfMonth();
+        // ✅ YYYY-M / YYYY-MM を許可して year と month を取り出す
+        if (preg_match('/^(\d{4})-(\d{1,2})$/', $monthRaw, $m)) {
+            $year  = (int)$m[1];
+            $month = (int)$m[2];
 
-    // prev/next（必ず文字列で渡す）
-    $prevMonth = $monthStart->copy()->subMonth()->format('Y-m');
-    $nextMonth = $monthStart->copy()->addMonth()->format('Y-m');
-
-    // 勤怠を日付キーでまとめる
-    $attendances = Attendance::with('breaks')
-        ->where('user_id', $user->id)
-        ->whereBetween('work_date', [$monthStart->toDateString(), $monthEnd->toDateString()])
-        ->get()
-        ->keyBy(fn ($a) => Carbon::parse($a->work_date)->toDateString());
-
-    $days = [];
-
-    for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
-        $a = $attendances->get($d->toDateString());
-
-        $clockIn  = ($a && $a->clock_in_at)  ? Carbon::parse($a->clock_in_at)->format('H:i')  : '-';
-        $clockOut = ($a && $a->clock_out_at) ? Carbon::parse($a->clock_out_at)->format('H:i') : '-';
-
-        // 休憩合計（breaks優先、無ければ旧カラム）
-        $breakMinutes = 0;
-
-        if ($a) {
-            if ($a->breaks && $a->breaks->count() > 0) {
-                foreach ($a->breaks as $br) {
-                    if ($br->start_at && $br->end_at) {
-                        $breakMinutes += Carbon::parse($br->start_at)
-                            ->diffInMinutes(Carbon::parse($br->end_at));
-                    }
-                }
-            } elseif (!empty($a->break_start_at) && !empty($a->break_end_at)) {
-                $breakMinutes = Carbon::parse($a->break_start_at)
-                    ->diffInMinutes(Carbon::parse($a->break_end_at));
+            // 範囲外なら当月にフォールバック
+            if ($month < 1 || $month > 12) {
+                $monthStart = Carbon::today()->startOfMonth();
+            } else {
+                $monthStart = Carbon::create($year, $month, 1)->startOfMonth();
             }
+        } else {
+            // 想定外は当月
+            $monthStart = Carbon::today()->startOfMonth();
         }
 
-        $breakDisp = ($breakMinutes > 0)
-            ? sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60)
-            : '-';
+        $monthEnd = $monthStart->copy()->endOfMonth();
 
-        $totalDisp = '-';
-        if ($a && $a->clock_in_at && $a->clock_out_at) {
-            $totalMinutes = Carbon::parse($a->clock_in_at)
-                ->diffInMinutes(Carbon::parse($a->clock_out_at)) - $breakMinutes;
+        // prev/next（必ず文字列で渡す）
+        $prevMonth = $monthStart->copy()->subMonth()->format('Y-m');
+        $nextMonth = $monthStart->copy()->addMonth()->format('Y-m');
 
-            if ($totalMinutes < 0) $totalMinutes = 0;
+        // 勤怠を日付キーでまとめる
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
+            ->whereBetween('work_date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+            ->get()
+            ->keyBy(fn($a) => Carbon::parse($a->work_date)->toDateString());
 
-            $totalDisp = sprintf('%d:%02d', intdiv($totalMinutes, 60), $totalMinutes % 60);
+        $days = [];
+
+        for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
+            $a = $attendances->get($d->toDateString());
+
+            $clockIn  = ($a && $a->clock_in_at)  ? Carbon::parse($a->clock_in_at)->format('H:i')  : '-';
+            $clockOut = ($a && $a->clock_out_at) ? Carbon::parse($a->clock_out_at)->format('H:i') : '-';
+
+            // 休憩合計（breaks優先、無ければ旧カラム）
+            $breakMinutes = 0;
+
+            if ($a) {
+                if ($a->breaks && $a->breaks->count() > 0) {
+                    foreach ($a->breaks as $br) {
+                        if ($br->start_at && $br->end_at) {
+                            $breakMinutes += Carbon::parse($br->start_at)
+                                ->diffInMinutes(Carbon::parse($br->end_at));
+                        }
+                    }
+                } elseif (!empty($a->break_start_at) && !empty($a->break_end_at)) {
+                    $breakMinutes = Carbon::parse($a->break_start_at)
+                        ->diffInMinutes(Carbon::parse($a->break_end_at));
+                }
+            }
+
+            $breakDisp = ($breakMinutes > 0)
+                ? sprintf('%d:%02d', intdiv($breakMinutes, 60), $breakMinutes % 60)
+                : '-';
+
+            $totalDisp = '-';
+            if ($a && $a->clock_in_at && $a->clock_out_at) {
+                $totalMinutes = Carbon::parse($a->clock_in_at)
+                    ->diffInMinutes(Carbon::parse($a->clock_out_at)) - $breakMinutes;
+
+                if ($totalMinutes < 0) $totalMinutes = 0;
+
+                $totalDisp = sprintf('%d:%02d', intdiv($totalMinutes, 60), $totalMinutes % 60);
+            }
+
+            $days[] = [
+                'date_label'    => $d->copy()->locale('ja')->isoFormat('MM/DD(ddd)'),
+                'clock_in'      => $clockIn,
+                'clock_out'     => $clockOut,
+                'break'         => $breakDisp,
+                'total'         => $totalDisp,
+                'attendance_id' => $a?->id,
+            ];
         }
 
-        $days[] = [
-            'date_label'    => $d->copy()->locale('ja')->isoFormat('MM/DD(ddd)'),
-            'clock_in'      => $clockIn,
-            'clock_out'     => $clockOut,
-            'break'         => $breakDisp,
-            'total'         => $totalDisp,
-            'attendance_id' => $a?->id,
-        ];
+        return view('attendance.list', compact(
+            'monthStart',
+            'prevMonth',
+            'nextMonth',
+            'days'
+        ));
     }
-
-    return view('attendance.list', compact(
-        'monthStart',
-        'prevMonth',
-        'nextMonth',
-        'days'
-    ));
-}
 
     // ボタン押下時の処理
     public function store(Request $request)
@@ -268,17 +268,17 @@ public function list(Request $request)
         // 休憩行数（最低2行、+1の空行を出す）
         $oldCount = is_array(old('breaks')) ? count(old('breaks')) : 0;
         $breakRowCount = max(1, $displayBreaks->count(), $oldCount);
-    if (!$isPending) {
-      $breakRowCount++;
-    }
+        if (!$isPending) {
+            $breakRowCount++;
+        }
 
-    if ($attendance->breaks->count() === 0 ) {
-      $breakRowCount--;
-    }
+        if ($attendance->breaks->count() === 0) {
+            $breakRowCount--;
+        }
 
-    if ($isApproved) {
-      $breakRowCount--;
-    }
+        if ($isApproved) {
+            $breakRowCount--;
+        }
         return view('attendance.show', compact(
             'attendance',
             'workDate',

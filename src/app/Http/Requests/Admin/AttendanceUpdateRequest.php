@@ -33,7 +33,7 @@ class AttendanceUpdateRequest extends FormRequest
             // date_format の日本語（validation.phpが整ってれば不要だけど、確実に日本語にするなら書く）
             'clock_in_at.date_format'   => '出勤時間は「HH:MM」形式で入力してください。',
             'clock_out_at.date_format'  => '退勤時間は「HH:MM」形式で入力してください。',
-            'breaks.*.start.date_format'=> '休憩開始時間は「HH:MM」形式で入力してください。',
+            'breaks.*.start.date_format' => '休憩開始時間は「HH:MM」形式で入力してください。',
             'breaks.*.end.date_format'  => '休憩終了時間は「HH:MM」形式で入力してください。',
 
             // required の日本語（FN029④）

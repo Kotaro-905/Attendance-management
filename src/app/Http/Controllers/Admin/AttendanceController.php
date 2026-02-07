@@ -107,56 +107,56 @@ class AttendanceController extends Controller
      * 勤怠詳細（管理者）
      */
     public function show(Attendance $attendance)
-{
-    // 勤怠と休憩は従来通り
-    $attendance->load(['user', 'breaks']);
+    {
+        // 勤怠と休憩は従来通り
+        $attendance->load(['user', 'breaks']);
 
-    $workDate = Carbon::parse($attendance->work_date);
-    $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
-    $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
+        $workDate = Carbon::parse($attendance->work_date);
+        $clockIn  = $attendance->clock_in_at  ? Carbon::parse($attendance->clock_in_at)  : null;
+        $clockOut = $attendance->clock_out_at ? Carbon::parse($attendance->clock_out_at) : null;
 
-    $breaks = $attendance->breaks
-        ->sortBy('order')
-        ->values();
+        $breaks = $attendance->breaks
+            ->sortBy('order')
+            ->values();
 
-    $breakRowCount = max(2, $breaks->count() + 1);
+        $breakRowCount = max(2, $breaks->count() + 1);
 
-    /**
-     * ✅ 追加：この勤怠に紐づく申請を取得
-     * - 承認待ち(status=0)があればそれを優先
-     * - なければ最新を1件
-     */
-    $correctionRequest = CorrectionRequest::with(['breaks', 'attendance.user'])
-        ->where('attendance_id', $attendance->id)
-        ->orderBy('status')          // 0(承認待ち) → 1(承認済み)
-        ->orderByDesc('created_at')  // 同じstatusなら最新
-        ->first();
+        /**
+         * ✅ 追加：この勤怠に紐づく申請を取得
+         * - 承認待ち(status=0)があればそれを優先
+         * - なければ最新を1件
+         */
+        $correctionRequest = CorrectionRequest::with(['breaks', 'attendance.user'])
+            ->where('attendance_id', $attendance->id)
+            ->orderBy('status')          // 0(承認待ち) → 1(承認済み)
+            ->orderByDesc('created_at')  // 同じstatusなら最新
+            ->first();
 
-    // ✅ 申請があるかどうか（blade分岐用）
-    $hasRequest = !is_null($correctionRequest);
+        // ✅ 申請があるかどうか（blade分岐用）
+        $hasRequest = !is_null($correctionRequest);
 
-    // ✅ 申請がある場合の状態（blade分岐用）
-    $isPending  = $correctionRequest ? ((int)$correctionRequest->status === 0) : false;
-    $isApproved = $correctionRequest ? ((int)$correctionRequest->status === 1) : false;
+        // ✅ 申請がある場合の状態（blade分岐用）
+        $isPending  = $correctionRequest ? ((int)$correctionRequest->status === 0) : false;
+        $isApproved = $correctionRequest ? ((int)$correctionRequest->status === 1) : false;
 
-    return view('admin.attendance.show', [
-        // 既存
-        'attendance'    => $attendance,
-        'workDate'      => $workDate,
-        'clockIn'       => $clockIn,
-        'clockOut'      => $clockOut,
-        'breaks'        => $breaks,
-        'breakRowCount' => $breakRowCount,
-        'clockInValue'  => $clockIn ? $clockIn->format('H:i') : '',
-        'clockOutValue' => $clockOut ? $clockOut->format('H:i') : '',
+        return view('admin.attendance.show', [
+            // 既存
+            'attendance'    => $attendance,
+            'workDate'      => $workDate,
+            'clockIn'       => $clockIn,
+            'clockOut'      => $clockOut,
+            'breaks'        => $breaks,
+            'breakRowCount' => $breakRowCount,
+            'clockInValue'  => $clockIn ? $clockIn->format('H:i') : '',
+            'clockOutValue' => $clockOut ? $clockOut->format('H:i') : '',
 
-        // ✅ 追加（ここが肝）
-        'correctionRequest' => $correctionRequest,
-        'hasRequest'        => $hasRequest,
-        'isPending'         => $isPending,
-        'isApproved'        => $isApproved,
-    ]);
-}
+            // ✅ 追加（ここが肝）
+            'correctionRequest' => $correctionRequest,
+            'hasRequest'        => $hasRequest,
+            'isPending'         => $isPending,
+            'isApproved'        => $isApproved,
+        ]);
+    }
     /**
      * 勤怠更新（管理者）
      */

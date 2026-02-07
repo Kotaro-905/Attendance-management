@@ -33,7 +33,7 @@ class AttendanceCorrectionRequest extends FormRequest
         return [
             'clock_in_at.date_format'   => '出勤時間は「HH:MM」形式で入力してください。',
             'clock_out_at.date_format'  => '退勤時間は「HH:MM」形式で入力してください。',
-            'breaks.*.start.date_format'=> '休憩開始時間は「HH:MM」形式で入力してください。',
+            'breaks.*.start.date_format' => '休憩開始時間は「HH:MM」形式で入力してください。',
             'breaks.*.end.date_format'  => '休憩終了時間は「HH:MM」形式で入力してください。',
             'reason.required'           => '備考を記入してください。',
         ];

@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
         return redirect()->route('attendance.index');
     }
 
-    
+
     public function destroy(Request $request)
     {
         Auth::logout();

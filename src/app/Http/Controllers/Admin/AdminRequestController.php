@@ -39,8 +39,8 @@ class AdminRequestController extends Controller
         ]);
 
         return view('admin.requests.show', [
-    'request' => $request,
-]);
+            'request' => $request,
+        ]);
     }
 
     /**
